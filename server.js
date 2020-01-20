@@ -48,7 +48,7 @@ app.ws('/echo', (ws, req) => {
 
     sd.login(config.username, config.password, function (sessionData, error) {
         if (!error) {
-            sd.subscribePrice(37, '1869', sessionData, (data) => {
+            sd.subscribePrice(15, '16386676', sessionData, (data) => {
                 if (ws.readyState === 1) {
                     ws.send(data);
                 }

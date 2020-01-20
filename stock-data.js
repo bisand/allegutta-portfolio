@@ -57,9 +57,9 @@ function subscribePrice(market, ident, sessionData, callback) {
             );
         })
         .on('data', function(d) {
-            util.log(d);
+            util.log(Buffer.from(d).toString());
             if(callback){
-                callback(d);
+                callback(Buffer.from(d).toString());
             }
         });
 }

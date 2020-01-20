@@ -1,9 +1,9 @@
-var util = require('util'),
-    fs = require('fs'),
-    path = require('path'),
-    rest = require('restler'),
-    NodeRSA = require('node-rsa'),
-    tls = require('tls');
+const util = require('util');
+const fs = require('fs');
+const path = require('path');
+const rest = require('restler');
+const NodeRSA = require('node-rsa');
+const tls = require('tls');
 
 function login(user, pass, fn) {
     var auth = encryptLogin(user, pass, 'NEXTAPI_TEST_public.pem');

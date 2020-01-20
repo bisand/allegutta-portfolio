@@ -1,11 +1,18 @@
 const express = require('express');
 const enableWs = require('express-ws');
+const path = require('path');
+const fs = require('fs');
 const sd = require('./stock-data');
-var path = require('path');
-var mime = require('mime');
 
 const app = express();
 enableWs(app);
+
+var config = { username: '', password: '' };
+var configPath = path.resolve('../../allegutta.config');
+if (fs.existsSync(configPath)) {
+    var configText = fs.readFileSync(configPath, 'utf-8');
+    config = JSON.parse(configText);
+}
 
 var options = {
     dotfiles: 'ignore',
@@ -19,10 +26,7 @@ var options = {
     },
 };
 
-var username = ''; // Get from config.
-var password = ''; // Get from config.
-
-sd.login(username, password, function(sessionData, error) {
+sd.login(config.username, config.password, function(sessionData, error) {
     if (!error) {
         sd.subscribePrice(30, '1869', sessionData);
     }

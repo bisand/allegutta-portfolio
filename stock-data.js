@@ -1,9 +1,9 @@
-var util = require('util'),
-    fs = require('fs'),
-    path = require('path'),
-    rest = require('restler'),
-    NodeRSA = require('node-rsa'),
-    tls = require('tls');
+const util = require('util');
+const fs = require('fs');
+const path = require('path');
+const rest = require('restler');
+const NodeRSA = require('node-rsa');
+const tls = require('tls');
 
 function login(user, pass, fn) {
     var auth = encryptLogin(user, pass, 'NEXTAPI_TEST_public.pem');
@@ -31,7 +31,7 @@ function login(user, pass, fn) {
         });
 }
 
-function subscribePrice(market, ident, sessionData) {
+function subscribePrice(market, ident, sessionData, callback) {
     var client = tls
         .connect(sessionData.private_feed.port, sessionData.public_feed.hostname, function() {
             client.setNoDelay(true);
@@ -58,6 +58,9 @@ function subscribePrice(market, ident, sessionData) {
         })
         .on('data', function(d) {
             util.log(d);
+            if(callback){
+                callback(d);
+            }
         });
 }
 

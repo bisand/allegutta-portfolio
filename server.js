@@ -1,11 +1,19 @@
 const express = require('express');
 const enableWs = require('express-ws');
+const path = require('path');
+const fs = require('fs');
+const os = require("os");
 const sd = require('./stock-data');
-var path = require('path');
-var mime = require('mime');
 
 const app = express();
 enableWs(app);
+
+var config = { username: '', password: '' };
+
+var configPath = path.resolve(os.homedir() + '/allegutta.config');
+if (fs.existsSync(configPath)) {
+    config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+}
 
 var options = {
     dotfiles: 'ignore',
@@ -14,19 +22,10 @@ var options = {
     index: false,
     maxAge: '1d',
     redirect: false,
-    setHeaders: function(res, path, stat) {
+    setHeaders: function (res, path, stat) {
         res.set('x-timestamp', Date.now());
     },
 };
-
-var username = ''; // Get from config.
-var password = ''; // Get from config.
-
-sd.login(username, password, function(sessionData, error) {
-    if (!error) {
-        sd.subscribePrice(30, '1869', sessionData);
-    }
-});
 
 app.use(express.static('public', options));
 
@@ -39,8 +38,22 @@ app.ws('/echo', (ws, req) => {
         ws.send(msg);
     });
 
+    ws.on('open', () => {
+        console.log('WebSocket is open');
+    });
+
     ws.on('close', () => {
         console.log('WebSocket was closed');
+    });
+
+    sd.login(config.username, config.password, function (sessionData, error) {
+        if (!error) {
+            sd.subscribePrice(37, '1869', sessionData, (data) => {
+                if (ws.readyState === 1) {
+                    ws.send(data);
+                }
+            });
+        }
     });
 
     function intervalFunc() {

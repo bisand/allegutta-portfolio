@@ -2,8 +2,9 @@ const express = require('express');
 const enableWs = require('express-ws');
 const path = require('path');
 const fs = require('fs');
-const os = require("os");
+const os = require('os');
 const sd = require('./stock-data');
+const yahoo = require('./yahoo');
 
 const app = express();
 enableWs(app);
@@ -48,7 +49,7 @@ app.ws('/echo', (ws, req) => {
 
     sd.login(config.username, config.password, function (sessionData, error) {
         if (!error) {
-            sd.subscribePrice(15, '16386676', sessionData, (data) => {
+            sd.subscribePrice(15, '16105640', sessionData, data => {
                 if (ws.readyState === 1) {
                     ws.send(data);
                 }
@@ -62,5 +63,8 @@ app.ws('/echo', (ws, req) => {
 
     setInterval(intervalFunc, 1500);
 });
+
+const yahooApi = new yahoo.YahooApi('T3HBZG3OGZIBSUNDAZUCKSJLFI', config);
+const portfolios = yahooApi.get_portfolios();
 
 app.listen(8080);

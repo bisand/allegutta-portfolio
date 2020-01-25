@@ -19,7 +19,7 @@ function login(user, pass, fn) {
         auth: auth,
     };
 
-    rest.postJson('https://api.test.nordnet.se/next/2/login', jsonData, opts)
+    rest.postJson('https://api.test.nordnet.se/next/1/login', jsonData, opts)
         .on('success', function(data, response) {
             // handle response
             util.puts('response: ' + util.inspect(data));

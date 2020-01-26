@@ -57,14 +57,13 @@ app.ws('/echo', (ws, req) => {
         }
     });
 
-    function intervalFunc() {
-        ws.send('Time on server is: ' + Date.now());
+    async function intervalFunc() {
+        const yahooApi = new yahoo.YahooApi('', config);
+        const portfolios = await yahooApi.get_portfolios();
+        ws.send(JSON.stringify(portfolios));
     }
 
-    setInterval(intervalFunc, 1500);
+    setInterval(intervalFunc, 5000);
 });
-
-const yahooApi = new yahoo.YahooApi('T3HBZG3OGZIBSUNDAZUCKSJLFI', config);
-const portfolios = yahooApi.get_portfolios();
 
 app.listen(8080);

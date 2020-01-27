@@ -19,7 +19,7 @@ function login(user, pass, fn) {
         auth: auth,
     };
 
-    rest.postJson('https://api.test.nordnet.se/next/2/login', jsonData, opts)
+    rest.postJson('https://api.test.nordnet.se/next/1/login', jsonData, opts)
         .on('success', function(data, response) {
             // handle response
             util.puts('response: ' + util.inspect(data));
@@ -31,7 +31,7 @@ function login(user, pass, fn) {
         });
 }
 
-function subscribePrice(market, ident, sessionData) {
+function subscribePrice(market, ident, sessionData, callback) {
     var client = tls
         .connect(sessionData.private_feed.port, sessionData.public_feed.hostname, function() {
             client.setNoDelay(true);
@@ -57,7 +57,10 @@ function subscribePrice(market, ident, sessionData) {
             );
         })
         .on('data', function(d) {
-            util.log(d);
+            util.log(Buffer.from(d).toString());
+            if(callback){
+                callback(Buffer.from(d).toString());
+            }
         });
 }
 

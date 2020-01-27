@@ -10,6 +10,7 @@ const app = express();
 enableWs(app);
 
 var config = { username: '', password: '' };
+var timerHandle;
 
 var configPath = path.resolve(os.homedir() + '/allegutta.config');
 if (fs.existsSync(configPath)) {
@@ -23,7 +24,7 @@ var options = {
     index: false,
     maxAge: '1d',
     redirect: false,
-    setHeaders: function (res, path, stat) {
+    setHeaders: function(res, path, stat) {
         res.set('x-timestamp', Date.now());
     },
 };
@@ -36,7 +37,11 @@ app.get('/', (req, res) => {
 
 app.ws('/echo', (ws, req) => {
     ws.on('message', msg => {
-        ws.send(msg);
+        try {
+            ws.send(msg);
+        } catch (error) {
+            console.log(error);
+        }
     });
 
     ws.on('open', () => {
@@ -44,26 +49,21 @@ app.ws('/echo', (ws, req) => {
     });
 
     ws.on('close', () => {
+        clearInterval(timerHandle);
         console.log('WebSocket was closed');
-    });
-
-    sd.login(config.username, config.password, function (sessionData, error) {
-        if (!error) {
-            sd.subscribePrice(15, '16105640', sessionData, data => {
-                if (ws.readyState === 1) {
-                    ws.send(data);
-                }
-            });
-        }
     });
 
     async function intervalFunc() {
         const yahooApi = new yahoo.YahooApi('', config);
         const portfolios = await yahooApi.get_portfolios();
-        ws.send(JSON.stringify(portfolios));
+        try {
+            ws.send(JSON.stringify(portfolios));
+        } catch (error) {
+            console.log(error);
+        }
     }
 
-    setInterval(intervalFunc, 5000);
+    timerHandle = setInterval(intervalFunc, 5000);
 });
 
 app.listen(8080);

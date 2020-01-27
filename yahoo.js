@@ -19,10 +19,11 @@ class YahooApi {
             this.portfolio = JSON.parse(fs.readFileSync(portfolioPath, 'utf-8'));
         }
 
-        this.portfolio.purchase_value = 0;
+        this.portfolio.purchase_value = 0.0;
+        this.portfolio.market_value = 0.0;
 
         var tickers = '';
-        this.portfolio.forEach(element => {
+        this.portfolio.positions.forEach(element => {
             tickers += element.symbol + ',';
             this.portfolio.purchase_value += element.shares * element.avg_price;
         });
@@ -40,25 +41,27 @@ class YahooApi {
 
         var quotes = await got(this.quotes_url, { searchParams })
             .then(res => {
-                console.log(res.body);
                 return JSON.parse(res.body).quoteResponse.result;
-            }).catch(err => {
+            })
+            .catch(err => {
                 console.log(err.response.body);
                 return err.response.body;
             });
 
-        this.portfolio.market_value = 0;
         quotes.forEach(element => {
-            var result = this.portfolio.find(obj => {
-                return obj.symbol === element.symbol;
-            })
-            this.portfolio.market_value += result.shares * element.regularMarketPrice;
+            var symbol = element.symbol;
+            var result = this.portfolio.positions.find(obj => {
+                return obj.symbol === symbol;
+            });
+            if (result) {
+                result.last_price = element.regularMarketPrice;
+                this.portfolio.market_value += result.shares * element.regularMarketPrice;
+            }
         });
 
         return this.portfolio;
-
     }
 }
 module.exports = {
-    YahooApi
+    YahooApi,
 };

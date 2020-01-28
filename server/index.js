@@ -45,7 +45,7 @@ app.get('/', (req, res) => {
     res.redirect('/index.html');
 });
 
-app.ws('/echo', (ws, req) => {
+app.ws('/ws', (ws, req) => {
     ws.on('message', async msg => {
         try {
             if ((msg && msg[0] === '{') || msg[0] === '[') {
@@ -76,4 +76,4 @@ app.ws('/echo', (ws, req) => {
     timerHandle = setInterval(intervalFunc, 10000);
 });
 
-app.listen(8080);
+app.listen(3000);

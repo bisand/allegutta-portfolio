@@ -11,9 +11,8 @@ class YahooApi {
         this.quotes_url = 'https://query2.finance.yahoo.com/v7/finance/quote';
     }
 
-    //var req = unirest('GET', 'https://api.login.yahoo.com/oauth2/request_auth?client_id=dj0yJmk9bjR3Rm5OekRXdE81JmQ9WVdrOVVrUnVRVkJoTkdVbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWYy&redirect_uri=oob&response_type=code&language=en-us');
-
     async get_portfolios() {
+        this.portfolio = {};
         var portfolioPath = path.resolve('./portfolio_allegutta.json');
         if (fs.existsSync(portfolioPath)) {
             this.portfolio = JSON.parse(fs.readFileSync(portfolioPath, 'utf-8'));
@@ -59,6 +58,7 @@ class YahooApi {
                     result.last_price = element.regularMarketPrice;
                     this.portfolio.market_value += result.shares * element.regularMarketPrice;
                 }
+                this.portfolio.equity = this.portfolio.market_value + this.portfolio.cash;
             });
         }
 

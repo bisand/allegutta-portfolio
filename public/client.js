@@ -7,12 +7,16 @@ const echoSocketUrl = socketProtocol + '//' + window.location.hostname + ':' + w
 const socket = new WebSocket(echoSocketUrl);
 
 socket.onopen = () => {
-    socket.send("Here's some text that the server is urgently awaiting!");
+    socket.send(JSON.stringify({ command: 'start' }));
 };
 
 socket.onmessage = e => {
-    var portfolio = JSON.parse(e.data);
-    CreateTableFromJSON(portfolio.positions);
+    if ((e.data && e.data[0] === '{') || e.data[0] === '[') {
+        var portfolio = JSON.parse(e.data);
+        if (portfolio && portfolio.positions) {
+            CreateTableFromJSON(portfolio.positions);
+        }
+    }
     console.log(portfolio);
 };
 

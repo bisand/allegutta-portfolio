@@ -23,12 +23,13 @@ class YahooApi {
         this.portfolio.market_value = 0.0;
 
         var tickers = '';
-        this.portfolio.positions.forEach(element => {
-            tickers += element.symbol + ',';
-            this.portfolio.purchase_value += element.shares * element.avg_price;
-        });
-        tickers = tickers.substr(0, tickers.length - 1);
-        // return this.portfolio;
+        if (this.portfolio && this.portfolio.positions) {
+            this.portfolio.positions.forEach(element => {
+                tickers += element.symbol + ',';
+                this.portfolio.purchase_value += element.shares * element.avg_price;
+            });
+            tickers = tickers.substr(0, tickers.length - 1);
+        }
 
         const searchParams = new URLSearchParams({
             formatted: false,
@@ -48,16 +49,18 @@ class YahooApi {
                 return err.response.body;
             });
 
-        quotes.forEach(element => {
-            var symbol = element.symbol;
-            var result = this.portfolio.positions.find(obj => {
-                return obj.symbol === symbol;
+        if (quotes) {
+            quotes.forEach(element => {
+                var symbol = element.symbol;
+                var result = this.portfolio.positions.find(obj => {
+                    return obj.symbol === symbol;
+                });
+                if (result) {
+                    result.last_price = element.regularMarketPrice;
+                    this.portfolio.market_value += result.shares * element.regularMarketPrice;
+                }
             });
-            if (result) {
-                result.last_price = element.regularMarketPrice;
-                this.portfolio.market_value += result.shares * element.regularMarketPrice;
-            }
-        });
+        }
 
         return this.portfolio;
     }

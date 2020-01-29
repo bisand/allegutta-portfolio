@@ -39,6 +39,7 @@ export interface SortEvent {
         '(click)': 'rotate()',
     },
 })
+
 export class NgbdSortableHeader {
     @Input() sortable: string;
     @Input() direction: SortDirection = '';
@@ -67,10 +68,10 @@ export class AppComponent implements AfterViewInit {
 
         const socketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         let echoSocketUrl = socketProtocol + '//' + window.location.hostname + ':' + window.location.port;
-        if (window.location.pathname !== '/') {
-            echoSocketUrl += '/' + window.location.pathname;
-        }
-        echoSocketUrl += '/api/ws/';
+        // if (window.location.pathname !== '/') {
+        //     echoSocketUrl += '/' + window.location.pathname;
+        // }
+        echoSocketUrl += '/portfolio/ws/';
         this.socket$ = new WebSocketSubject(echoSocketUrl);
 
         this.socket$.subscribe(

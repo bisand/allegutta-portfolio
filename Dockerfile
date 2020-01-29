@@ -13,8 +13,9 @@ COPY package*.json ./
 RUN npm ci --only=production
 
 # Bundle app source
-COPY server .
-copy client/dist/. ./public
+COPY . .
 
-EXPOSE 8080
-CMD [ "node", "server.js" ]
+RUN mv client_dist public
+
+EXPOSE 3000
+CMD [ "node", "server/index.js" ]

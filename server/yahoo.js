@@ -4,10 +4,7 @@ const got = require('got');
 const queryString = require('query-string');
 
 class YahooApi {
-    constructor(userId, config) {
-        this.config = config;
-        this.userId = userId;
-        this.portfolio_url = 'https://query1.finance.yahoo.com/v7/finance/desktop/portfolio';
+    constructor() {
         this.quotes_url = 'https://query2.finance.yahoo.com/v7/finance/quote';
     }
 

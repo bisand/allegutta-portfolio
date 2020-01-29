@@ -9,16 +9,10 @@ const yahoo = require('./yahoo');
 const app = express();
 enableWs(app);
 
-var config = { username: '', password: '' };
 var timerHandle;
 
-var configPath = path.resolve(os.homedir() + '/allegutta.config');
-if (fs.existsSync(configPath)) {
-    config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
-}
-
 async function fetchAndSendPortfolio(ws) {
-    const yahooApi = new yahoo.YahooApi('', config);
+    const yahooApi = new yahoo.YahooApi();
     const portfolios = await yahooApi.get_portfolios();
     try {
         ws.send(JSON.stringify(portfolios));
@@ -29,23 +23,24 @@ async function fetchAndSendPortfolio(ws) {
 
 var options = {
     dotfiles: 'ignore',
-    etag: false,
     extensions: ['htm', 'html', 'js', 'css'],
-    index: false,
     maxAge: '1d',
-    redirect: false,
     setHeaders: function(res, path, stat) {
         res.set('x-timestamp', Date.now());
     },
 };
 
-app.use(express.static('public', options));
+var dirName = path.join(__dirname, '/../public');
+if (!fs.existsSync(dirName)) {
+    dirName = path.join(__dirname, '/../client_dist');
+}
+app.use('/portfolio', express.static(dirName, options));
 
 app.get('/', (req, res) => {
-    res.redirect('/index.html');
+    res.redirect('/portfolio');
 });
 
-app.ws('/ws', (ws, req) => {
+app.ws('/portfolio/ws', (ws, req) => {
     ws.on('message', async msg => {
         try {
             if ((msg && msg[0] === '{') || msg[0] === '[') {
@@ -76,4 +71,4 @@ app.ws('/ws', (ws, req) => {
     timerHandle = setInterval(intervalFunc, 10000);
 });
 
-app.listen(3000);
+app.listen(4000);

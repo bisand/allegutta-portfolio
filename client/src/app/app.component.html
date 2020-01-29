@@ -1,18 +1,24 @@
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th scope="col" sortable="symbol" (sort)="onSort($event)">Ticker</th>
-            <th scope="col" sortable="shares" (sort)="onSort($event)">Shares</th>
-            <th scope="col" sortable="avg_price" (sort)="onSort($event)">Average Price</th>
-            <th scope="col" sortable="last_price" (sort)="onSort($event)">Last Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let position of portfolio.positions">
-             <td>{{ position.symbol }}</td>
-            <td>{{ position.shares | number }}</td>
-            <td>{{ position.avg_price | number }}</td>
-            <td>{{ position.last_price | number }}</td>
-        </tr>
-    </tbody>
-</table>
+<ngb-accordion #acc="ngbAccordion" activeIds="ngb-panel-0">
+    <ngb-panel title="Simple">
+        <ng-template ngbPanelContent>
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col" sortable="symbol" (sort)="onSort($event)">Ticker</th>
+                        <th scope="col" sortable="shares" (sort)="onSort($event)">Shares</th>
+                        <th scope="col" sortable="avg_price" (sort)="onSort($event)">Average Price</th>
+                        <th scope="col" sortable="last_price" (sort)="onSort($event)">Last Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let position of portfolio.positions">
+                        <td>{{ position.symbol }}</td>
+                        <td>{{ position.shares | number }}</td>
+                        <td>{{ position.avg_price | number }}</td>
+                        <td>{{ position.last_price | number }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </ng-template>
+    </ngb-panel>
+</ngb-accordion>

@@ -1,5 +1,6 @@
 const express = require('express');
 const enableWs = require('express-ws');
+const WebSocket = require('ws');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
@@ -7,72 +8,136 @@ const sd = require('./stock-data');
 const yahoo = require('./yahoo');
 
 const app = express();
-enableWs(app);
+const wsInstance = enableWs(app);
+const wss = wsInstance.getWss();
 
-var timerHandle;
+let config = {
+    dataFetchInterval: 11533,
+    pingInterval: 31532
+};
 
-async function fetchAndSendPortfolio(ws) {
+let portfolio = undefined;
+
+function readConfigFile() {
+    var configPath = path.resolve('./server.config.json');
+    if (fs.existsSync(configPath)) {
+        this.portfolio = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+    }
+}
+
+// Fetch portfolio from Yahoo Finance.
+async function fetchPortfolio() {
     const yahooApi = new yahoo.YahooApi();
-    const portfolios = await yahooApi.get_portfolios();
+    const portfolio = await yahooApi.get_portfolio();
+    return portfolio;
+}
+
+// Publish portfolio to given client.
+async function publishPortfolioToClient(client, portfolio) {
     try {
-        ws.send(JSON.stringify(portfolios));
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify(portfolio));
+        }
     } catch (error) {
         console.log(error);
     }
 }
 
+// Publish portfolio to all connected clients.
+async function publishPortfolio(portfolio) {
+    try {
+        wss.clients.forEach(function each(client) {
+            if (client.readyState === WebSocket.OPEN && client.isAlive) {
+                client.send(JSON.stringify(portfolio));
+            }
+        });
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// Parse incoming messages and act accordingly.
+async function parseMessage(msg, ws) {
+    if ((msg && msg[0] === '{') || msg[0] === '[') {
+        msg = JSON.parse(msg);
+        if (msg.command && msg.command === 'start') {
+            if (!portfolio) {
+                portfolio = await fetchPortfolio();
+            }
+            publishPortfolioToClient(ws, portfolio);
+        }
+    }
+    return msg;
+}
+
+// Empty function used in heartbeat.
+function noop() { }
+
+// Heartbeat function.
+function heartbeat() {
+    this.isAlive = true;
+}
+
+// Start by reading the config file.
+readConfigFile();
+
+// Options for serving static files via express.
 var options = {
     dotfiles: 'ignore',
     extensions: ['htm', 'html', 'js', 'css'],
     maxAge: '1d',
-    setHeaders: function(res, path, stat) {
+    setHeaders: function (res, path, stat) {
         res.set('x-timestamp', Date.now());
     },
 };
 
+// Locate static files and serve them.
 var dirName = path.join(__dirname, '/../public');
 if (!fs.existsSync(dirName)) {
     dirName = path.join(__dirname, '/../client_dist');
 }
 app.use('/portfolio', express.static(dirName, options));
 
+// Root path redirects to portfolio.
 app.get('/', (req, res) => {
     res.redirect('/portfolio');
 });
 
+// WebSocket endpoint.
 app.ws('/portfolio/ws', (ws, req) => {
+
+    ws.isAlive = true;
+    ws.on('pong', heartbeat);
+
     ws.on('message', async msg => {
         try {
-            if ((msg && msg[0] === '{') || msg[0] === '[') {
-                msg = JSON.parse(msg);
-                if (msg.command && msg.command === 'start') {
-                    await fetchAndSendPortfolio(ws);
-                }
-            }
+            msg = await parseMessage(msg, ws);
             console.log(msg);
         } catch (error) {
             console.log(error);
         }
     });
 
-    ws.on('open', async () => {
-        console.log('WebSocket is open');
-    });
-
     ws.on('close', async () => {
-        clearInterval(timerHandle);
         console.log('WebSocket was closed');
     });
-
-    async function intervalFunc() {
-        try {
-            await fetchAndSendPortfolio(ws);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    timerHandle = setInterval(intervalFunc, 10000);
 });
+
+// Regularly ping clients to make sure they are still alive.
+const pingInterval = setInterval(function () {
+    wss.clients.forEach(function each(ws) {
+        if (ws.isAlive === false) {
+            return ws.terminate();
+        }
+        ws.isAlive = false;
+        ws.ping(noop);
+    });
+}, config.pingInterval);
+
+// Regularly publish portfolio to all connected clients.
+const portfolioInterval = setInterval(async function () {
+    portfolio = await fetchPortfolio();
+    publishPortfolio(portfolio);
+}, config.dataFetchInterval);
 
 app.listen(4000);

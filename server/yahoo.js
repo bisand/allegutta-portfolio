@@ -8,7 +8,7 @@ class YahooApi {
         this.quotes_url = 'https://query2.finance.yahoo.com/v7/finance/quote';
     }
 
-    async get_portfolios() {
+    async get_portfolio() {
         this.portfolio = {};
         var portfolioPath = path.resolve('./portfolio_allegutta.json');
         if (fs.existsSync(portfolioPath)) {

@@ -9,7 +9,7 @@ const yahoo = require('./yahoo');
 const app = express();
 enableWs(app);
 
-var timerHandle = -1;
+var timerHandle;
 
 async function fetchAndSendPortfolio(ws) {
     const yahooApi = new yahoo.YahooApi();
@@ -60,6 +60,7 @@ app.ws('/portfolio/ws', (ws, req) => {
     });
 
     ws.on('close', async () => {
+        clearInterval(timerHandle);
         console.log('WebSocket was closed');
     });
 
@@ -71,9 +72,7 @@ app.ws('/portfolio/ws', (ws, req) => {
         }
     }
 
-    if (timerHandle === -1) {
-        timerHandle = setInterval(intervalFunc, 10000);
-    }
+    timerHandle = setInterval(intervalFunc, 10000);
 });
 
 app.listen(4000);

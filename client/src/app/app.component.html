@@ -32,7 +32,7 @@
                         {{ portfolio.change_today_percent | number: '0.2-2':'nb' }}%
                     </span>
                     <span style="margin-left: 10px;" [ngStyle]="{ color: portfolio.change_today_total >= 0 ? 'blue' : 'red' }">
-                        {{ portfolio.change_today_total | currency: 'NOK':'':'0.2-2':'nb' }}
+                        {{ portfolio.change_today_total | currency: 'NOK':'':'0.0-0':'nb' }}
                     </span>
                 </h4>
                 <h6>Endring totalt</h6>
@@ -41,7 +41,7 @@
                         {{ portfolio.change_total_percent | number: '0.2-2':'nb' }}%
                     </span>
                     <span style="margin-left: 10px;" [ngStyle]="{ color: portfolio.change_total >= 0 ? 'blue' : 'red' }">
-                        {{ portfolio.change_total | currency: 'NOK':'':'0.2-2':'nb' }}
+                        {{ portfolio.change_total | currency: 'NOK':'':'0.0-0':'nb' }}
                     </span>
                 </h4>
                 <br />

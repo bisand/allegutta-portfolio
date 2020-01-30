@@ -9,7 +9,7 @@ const yahoo = require('./yahoo');
 const app = express();
 enableWs(app);
 
-var timerHandle;
+var timerHandle = -1;
 
 async function fetchAndSendPortfolio(ws) {
     const yahooApi = new yahoo.YahooApi();
@@ -71,7 +71,7 @@ app.ws('/portfolio/ws', (ws, req) => {
         }
     }
 
-    if (!timerHandle) {
+    if (timerHandle === -1) {
         timerHandle = setInterval(intervalFunc, 10000);
     }
 });

@@ -26,7 +26,7 @@
                 <br />
                 <h4>Markedsverdi</h4>
                 <h2>{{ portfolio.market_value | currency: 'NOK':'':'0.0-0':'nb' }}</h2>
-                <h6>Today</h6>
+                <h6>Endring i dag</h6>
                 <h4>
                     <span style="margin-right: 10px;" [ngStyle]="{ color: portfolio.change_today_percent >= 0 ? 'blue' : 'red' }">
                         {{ portfolio.change_today_percent | number: '0.2-2':'nb' }}%
@@ -35,7 +35,7 @@
                         {{ portfolio.change_today_total | currency: 'NOK':'':'0.2-2':'nb' }}
                     </span>
                 </h4>
-                <h6>Total</h6>
+                <h6>Endring totalt</h6>
                 <h4>
                     <span style="margin-right: 10px;" [ngStyle]="{ color: portfolio.change_total_percent >= 0 ? 'blue' : 'red' }">
                         {{ portfolio.change_total_percent | number: '0.2-2':'nb' }}%
@@ -45,7 +45,7 @@
                     </span>
                 </h4>
                 <br />
-                <h4>Cash</h4>
+                <h4>Saldo</h4>
                 <h3>{{ portfolio.cash | currency: 'NOK':'':'0.0-0':'nb' }}</h3>
             </div>
         </div>

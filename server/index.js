@@ -60,15 +60,20 @@ app.ws('/portfolio/ws', (ws, req) => {
     });
 
     ws.on('close', async () => {
-        clearInterval(timerHandle);
         console.log('WebSocket was closed');
     });
 
     async function intervalFunc() {
-        await fetchAndSendPortfolio(ws);
+        try {
+            await fetchAndSendPortfolio(ws);
+        } catch (error) {
+            console.error(error);
+        }
     }
 
-    timerHandle = setInterval(intervalFunc, 10000);
+    if (!timerHandle) {
+        timerHandle = setInterval(intervalFunc, 10000);
+    }
 });
 
 app.listen(4000);

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { faUser, faPowerOff } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faPowerOff, faEdit } from '@fortawesome/free-solid-svg-icons';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -10,6 +10,7 @@ import { AuthService } from '../auth.service';
 export class NavBarComponent implements OnInit {
   isCollapsed = true;
   faUser = faUser;
+  faEdit = faEdit;
   faPowerOff = faPowerOff;
 
   constructor(public auth: AuthService) { }

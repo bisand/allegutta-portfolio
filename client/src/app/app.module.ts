@@ -15,6 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ExternalApiComponent } from './external-api/external-api.component';
 import { FormsModule } from '@angular/forms';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import * as $ from 'jquery';
 
 @NgModule({
     declarations: [AppComponent, NavBarComponent, ProfileComponent, HomeComponent, PortfolioEditorComponent, ExternalApiComponent],

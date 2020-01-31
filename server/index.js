@@ -1,5 +1,6 @@
 const express = require('express');
 const enableWs = require('express-ws');
+const bodyParser = require('body-parser');
 const WebSocket = require('ws');
 const path = require('path');
 const fs = require('fs');
@@ -54,7 +55,7 @@ async function fetchPortfolio() {
     return portfolio;
 }
 
-async function loadPortfolioFromDisk(){
+async function loadPortfolioFromDisk() {
     let portfolio = {};
     let portfolioPath = path.resolve('./portfolio_allegutta.json');
     if (fs.existsSync(portfolioPath)) {
@@ -102,7 +103,7 @@ async function parseMessage(msg, ws) {
 }
 
 // Empty function used in heartbeat.
-function noop() {}
+function noop() { }
 
 // Heartbeat function.
 function heartbeat() {
@@ -117,7 +118,7 @@ var options = {
     dotfiles: 'ignore',
     extensions: ['htm', 'html', 'js', 'css'],
     maxAge: '1d',
-    setHeaders: function(res, path, stat) {
+    setHeaders: function (res, path, stat) {
         res.set('x-timestamp', Date.now());
     },
 };
@@ -128,6 +129,7 @@ if (!fs.existsSync(dirName)) {
     dirName = path.join(__dirname, '/../client_dist');
 }
 app.use('/portfolio', express.static(dirName, options));
+app.use(bodyParser.json());
 
 // Root path redirects to portfolio.
 app.get('/', (req, res) => {
@@ -167,10 +169,15 @@ app.get('/portfolio/api/portfolio', checkJwt, async (req, res) => {
     res.json(portfolio);
 });
 
-app.post('/portfolio/api/portfolio', checkJwt, (req, res) => {});
+app.post('/portfolio/api/portfolio', checkJwt, (req, res) => {
+    console.log(req.body);
+    var portfolio = req.body;
+    const yahooApi = new yahoo.YahooApi();
+    yahooApi.savePortfolio(portfolio);
+});
 
 // Regularly ping clients to make sure they are still alive.
-const pingInterval = setInterval(function() {
+const pingInterval = setInterval(function () {
     wss.clients.forEach(function each(ws) {
         if (ws.isAlive === false) {
             return ws.terminate();
@@ -181,7 +188,7 @@ const pingInterval = setInterval(function() {
 }, config.pingInterval);
 
 // Regularly publish portfolio to all connected clients.
-const portfolioInterval = setInterval(async function() {
+const portfolioInterval = setInterval(async function () {
     portfolio = await fetchPortfolio();
     publishPortfolio(portfolio);
 }, config.dataFetchInterval);

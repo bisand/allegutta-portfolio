@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { WebSocketSubject } from 'rxjs/webSocket';
 
+declare var $: any;
+
 export interface IPosition {
     symbol?: string;
     name?: string;
@@ -53,5 +55,7 @@ export class HomeComponent implements OnInit {
         this.socket$.next(command);
     }
 
-    ngOnInit() {}
+    ngOnInit() {
+        $('[data-toggle="tooltip"]').tooltip();
+    }
 }

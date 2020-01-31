@@ -92,6 +92,19 @@ class YahooApi {
 
         return this.portfolio;
     }
+
+    savePortfolio(portfolio) {
+
+        if (!portfolio)
+            return;
+
+        var portfolioPath = path.resolve('./portfolio_allegutta.json');
+        var backupPortfolioPath = path.resolve('./portfolio_allegutta_backup_' + new Date().valueOf() + '.json');
+        fs.copyFileSync(portfolioPath, backupPortfolioPath);
+        fs.writeFileSync(portfolioPath, JSON.stringify(portfolio))
+        this.portfolio = portfolio;
+        return portfolio;
+    }
 }
 module.exports = {
     YahooApi,

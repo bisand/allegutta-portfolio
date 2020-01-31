@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { WebSocketSubject } from 'rxjs/webSocket';
 
 @Component({
     selector: 'app-root',
@@ -7,6 +6,5 @@ import { WebSocketSubject } from 'rxjs/webSocket';
     styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-    ngOnInit(): void {
-    }
+    ngOnInit(): void {}
 }

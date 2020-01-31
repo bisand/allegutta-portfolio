@@ -4,31 +4,31 @@
         <div class="card-body">
             <div class="jumbotron text-center">
                 <h2>Egenkapital</h2>
-                <h1>{{ portfolio.equity | currency: 'NOK':'':'0.0-0':'nb' }}</h1>
+                <h1 class="display-2">{{ portfolio.equity | currency: 'NOK':'':'0.0-0':'nb' }}</h1>
                 <br />
-                <h4>Markedsverdi</h4>
-                <h2>{{ portfolio.market_value | currency: 'NOK':'':'0.0-0':'nb' }}</h2>
-                <h6>Endring i dag</h6>
+                <h3>Markedsverdi</h3>
+                <h1>{{ portfolio.market_value | currency: 'NOK':'':'0.0-0':'nb' }}</h1>
+                <h4>Endring i dag</h4>
                 <h4>
-                    <span style="margin-right: 10px;" [ngStyle]="{ color: portfolio.change_today_percent >= 0 ? 'blue' : 'red' }">
+                    <span style="margin-right: 10px;" [ngStyle]="{ color: portfolio.change_today_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
                         {{ portfolio.change_today_percent | number: '0.2-2':'nb' }}%
                     </span>
-                    <span style="margin-left: 10px;" [ngStyle]="{ color: portfolio.change_today_total >= 0 ? 'blue' : 'red' }">
+                    <span style="margin-left: 10px;" [ngStyle]="{ color: portfolio.change_today_total >= 0 ? 'RoyalBlue' : 'Tomato' }">
                         {{ portfolio.change_today_total | currency: 'NOK':'':'0.0-0':'nb' }}
                     </span>
                 </h4>
-                <h6>Endring totalt</h6>
+                <h4>Endring totalt</h4>
                 <h4>
-                    <span style="margin-right: 10px;" [ngStyle]="{ color: portfolio.change_total_percent >= 0 ? 'blue' : 'red' }">
+                    <span style="margin-right: 10px;" [ngStyle]="{ color: portfolio.change_total_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
                         {{ portfolio.change_total_percent | number: '0.2-2':'nb' }}%
                     </span>
-                    <span style="margin-left: 10px;" [ngStyle]="{ color: portfolio.change_total >= 0 ? 'blue' : 'red' }">
+                    <span style="margin-left: 10px;" [ngStyle]="{ color: portfolio.change_total >= 0 ? 'RoyalBlue' : 'Tomato' }">
                         {{ portfolio.change_total | currency: 'NOK':'':'0.0-0':'nb' }}
                     </span>
                 </h4>
                 <br />
-                <h4>Saldo</h4>
-                <h3>{{ portfolio.cash | currency: 'NOK':'':'0.0-0':'nb' }}</h3>
+                <h3>Saldo</h3>
+                <h1>{{ portfolio.cash | currency: 'NOK':'':'0.0-0':'nb' }}</h1>
             </div>
         </div>
     </div>
@@ -47,25 +47,29 @@
                         <th class="text-right">Siste</th>
                         <th class="text-right d-none d-md-table-cell">Verdi</th>
                         <th class="text-right">Avkastning %</th>
-                        <th class="text-right d-none d-lg-table-cell">Avkastning</th>
+                        <th class="text-right d-none d-xl-table-cell">Avkastning</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let position of portfolio.positions">
-                        <td class="d-md-none">{{ position.symbol }}</td>
-                        <td class="d-none d-md-table-cell">{{ position.name }}</td>
+                        <td class="d-md-none">
+                            <span data-toggle="tooltip" data-placement="right" title="{{ position.name }}">{{ position.symbol }}</span>
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                            <span data-toggle="tooltip" data-placement="right" title="{{ position.symbol }}">{{ position.name }}</span>
+                        </td>
                         <td class="text-right d-none d-lg-table-cell">{{ position.shares | number: '0.2-2':'nb' }}</td>
                         <td class="text-right d-none d-lg-table-cell">{{ position.avg_price | currency: 'NOK':'':'0.2-2':'nb' }}</td>
-                        <td class="text-right" [ngStyle]="{ color: position.change_today_percent >= 0 ? 'blue' : 'red' }">
+                        <td class="text-right" [ngStyle]="{ color: position.change_today_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
                             {{ position.change_today_percent | number: '0.2-2':'nb' }} %
                         </td>
                         <td class="text-right d-none d-lg-table-cell ">{{ position.cost_value | currency: 'NOK':'':'0.0-0':'nb' }}</td>
                         <td class="text-right">{{ position.last_price | currency: 'NOK':'':'0.2-2':'nb' }}</td>
                         <td class="text-right d-none d-md-table-cell ">{{ position.current_value | currency: 'NOK':'':'0.0-0':'nb' }}</td>
-                        <td class="text-right" [ngStyle]="{ color: position.return_percent >= 0 ? 'blue' : 'red' }">
+                        <td class="text-right" [ngStyle]="{ color: position.return_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
                             {{ position.return_percent | number: '0.2-2':'nb' }} %
                         </td>
-                        <td class="text-right  d-none d-lg-table-cell" [ngStyle]="{ color: position.return >= 0 ? 'blue' : 'red' }">
+                        <td class="text-right d-none d-xl-table-cell" [ngStyle]="{ color: position.return >= 0 ? 'RoyalBlue' : 'Tomato' }">
                             {{ position.return | currency: 'NOK':'':'0.0-0':'nb' }}
                         </td>
                     </tr>
@@ -80,10 +84,10 @@
                         <th class="text-right d-none d-lg-table-cell"></th>
                         <th class="text-right"></th>
                         <th class="text-right d-none d-md-table-cell"></th>
-                        <th class="text-right" [ngStyle]="{ color: portfolio.change_total_percent >= 0 ? 'blue' : 'red' }">
+                        <th class="text-right" [ngStyle]="{ color: portfolio.change_total_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
                             {{ portfolio.change_total_percent | number: '0.2-2':'nb' }} %
                         </th>
-                        <th class="text-righ  d-none d-lg-table-cell" [ngStyle]="{ color: portfolio.change_total_percent >= 0 ? 'blue' : 'red' }">
+                        <th class="text-right d-none d-xl-table-cell" [ngStyle]="{ color: portfolio.change_total_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
                             {{ portfolio.change_total | currency: 'NOK':'':'0.0-0':'nb' }}
                         </th>
                     </tr>

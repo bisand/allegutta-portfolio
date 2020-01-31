@@ -58,7 +58,7 @@
                         <td class="d-none d-md-table-cell">
                             <span data-toggle="tooltip" data-placement="right" title="{{ position.symbol }}">{{ position.name }}</span>
                         </td>
-                        <td class="text-right d-none d-lg-table-cell">{{ position.shares | number: '0.2-2':'nb' }}</td>
+                        <td class="text-right d-none d-lg-table-cell">{{ position.shares | number: '0.0-0':'nb' }}</td>
                         <td class="text-right d-none d-lg-table-cell">{{ position.avg_price | currency: 'NOK':'':'0.2-2':'nb' }}</td>
                         <td class="text-right" [ngStyle]="{ color: position.change_today_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
                             {{ position.change_today_percent | number: '0.2-2':'nb' }} %

@@ -4,7 +4,8 @@
         <div class="card-body">
             <div class="jumbotron text-center">
                 <h2>Egenkapital</h2>
-                <h1 class="display-2">{{ portfolio.equity | currency: 'NOK':'':'0.0-0':'nb' }}</h1>
+                <h1 class="d-none d-sm-block display-2">{{ portfolio.equity | currency: 'NOK':'':'0.0-0':'nb' }}</h1>
+                <h1 class="d-sm-none">{{ portfolio.equity | currency: 'NOK':'':'0.0-0':'nb' }}</h1>
                 <br />
                 <h3>Markedsverdi</h3>
                 <h1>{{ portfolio.market_value | currency: 'NOK':'':'0.0-0':'nb' }}</h1>

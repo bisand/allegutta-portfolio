@@ -153,7 +153,7 @@ app.get('/portfolio/api/test', (req, res) => {
     });
 });
 
-app.get('/portfolio/api/portfolio', checkJwt, scopeRead, (req, res) => {
+app.get('/portfolio/api/portfolio', checkJwt, (req, res) => {
     res.json({
         message: 'Hello from a private endpoint! You need to be authenticated and have a scope of read:messages to see this.',
     });

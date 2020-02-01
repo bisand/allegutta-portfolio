@@ -13,4 +13,8 @@ export class ApiService {
     return this.http.get('/portfolio/api/portfolio');
   }
 
+  test$(): Observable<any> {
+    return this.http.get('/portfolio/api/test');
+  }
+
 }

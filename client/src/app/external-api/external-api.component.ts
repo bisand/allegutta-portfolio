@@ -16,4 +16,8 @@ export class ExternalApiComponent implements OnInit {
     pingApi() {
         this.api.ping$().subscribe(res => (this.responseJson = res));
     }
+
+    testApi() {
+        this.api.test$().subscribe(res => (this.responseJson = res));
+    }
 }

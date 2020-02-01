@@ -15,6 +15,7 @@ export class AuthService {
             domain: 'bisand.auth0.com',
             client_id: 'GkHeGKUC45oQb2H2s2LdYF8sTycapRe0',
             redirect_uri: `${window.location.origin + '/portfolio/'}`,
+            audience: 'https://allegutta.net/portfolio/api',
         }),
     ) as Observable<Auth0Client>).pipe(
         shareReplay(1), // Every subscription receives the same shared value
@@ -52,6 +53,9 @@ export class AuthService {
         );
     }
 
+    getTokenSilently$(options?): Observable<string> {
+        return this.auth0Client$.pipe(concatMap((client: Auth0Client) => from(client.getTokenSilently(options))));
+    }
     private localAuthSetup() {
         // This should only be called on app initialization
         // Set up local authentication streams

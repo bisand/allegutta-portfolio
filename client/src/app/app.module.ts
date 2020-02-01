@@ -12,10 +12,12 @@ import('@angular/common/locales/nb').then(lang => registerLocaleData(lang.defaul
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { HomeComponent } from './home/home.component';
 import { PortfolioEditorComponent } from './portfolio-editor/portfolio-editor.component';
+import { HttpClientModule } from '@angular/common/http';
+import { ExternalApiComponent } from './external-api/external-api.component';
 
 @NgModule({
-    declarations: [AppComponent, NavBarComponent, ProfileComponent, HomeComponent, PortfolioEditorComponent],
-    imports: [BrowserModule, AppRoutingModule, NgbModule, FontAwesomeModule],
+    declarations: [AppComponent, NavBarComponent, ProfileComponent, HomeComponent, PortfolioEditorComponent, ExternalApiComponent],
+    imports: [BrowserModule, AppRoutingModule, HttpClientModule, NgbModule, FontAwesomeModule],
     providers: [],
     bootstrap: [AppComponent],
 })

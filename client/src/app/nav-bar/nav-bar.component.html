@@ -23,14 +23,13 @@
                         {{ profile.name }}
                     </div>
                     <div class="dropdown-item" *ngIf="profile">
-                        <a routerLink="/profile">
-                            <fa-icon [icon]="faUser" class="mr-3"></fa-icon> Profile
-                        </a>
+                        <a routerLink="/profile"> <fa-icon [icon]="faUser" class="mr-3"></fa-icon> Profile </a>
                     </div>
                     <div class="dropdown-item" *ngIf="profile">
-                        <a routerLink="/portfolio-editor">
-                            <fa-icon [icon]="faEdit" class="mr-3"></fa-icon> Redigér Portefølje
-                        </a>
+                        <a routerLink="/portfolio-editor"> <fa-icon [icon]="faEdit" class="mr-3"></fa-icon> Redigér Portefølje </a>
+                    </div>
+                    <div class="dropdown-item" *ngIf="profile">
+                        <a routerLink="external-api" *ngIf="auth.loggedIn">External API</a>
                     </div>
                     <button (click)="auth.logout()" class="btn btn-link dropdown-item" id="qsLogoutBtn">
                         <fa-icon [icon]="faPowerOff" class="mr-3"></fa-icon> Log out

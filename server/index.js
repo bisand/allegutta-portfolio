@@ -4,7 +4,9 @@ const WebSocket = require('ws');
 const path = require('path');
 const fs = require('fs');
 const os = require('os');
-const sd = require('./stock-data');
+const jwt = require('express-jwt');
+const jwtAuthz = require('express-jwt-authz');
+const jwksRsa = require('jwks-rsa');
 const yahoo = require('./yahoo');
 
 const app = express();
@@ -13,10 +15,30 @@ const wss = wsInstance.getWss();
 
 let config = {
     dataFetchInterval: 11533,
-    pingInterval: 31532
+    pingInterval: 31532,
 };
 
 let portfolio = undefined;
+
+// Authentication middleware. When used, the
+// Access Token must exist and be verified against
+// the Auth0 JSON Web Key Set
+const checkJwt = jwt({
+    // Dynamically provide a signing key
+    // based on the kid in the header and
+    // the signing keys provided by the JWKS endpoint.
+    secret: jwksRsa.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `https://bisand.auth0.com/.well-known/jwks.json`,
+    }),
+
+    // Validate the audience and the issuer.
+    audience: 'https://allegutta.net/portfolio/api',
+    issuer: 'https://bisand.auth0.com/',
+    algorithms: ['RS256'],
+});
 
 function readConfigFile() {
     var configPath = path.resolve('./server.config.json');
@@ -71,7 +93,7 @@ async function parseMessage(msg, ws) {
 }
 
 // Empty function used in heartbeat.
-function noop() { }
+function noop() {}
 
 // Heartbeat function.
 function heartbeat() {
@@ -86,7 +108,7 @@ var options = {
     dotfiles: 'ignore',
     extensions: ['htm', 'html', 'js', 'css'],
     maxAge: '1d',
-    setHeaders: function (res, path, stat) {
+    setHeaders: function(res, path, stat) {
         res.set('x-timestamp', Date.now());
     },
 };
@@ -105,7 +127,6 @@ app.get('/', (req, res) => {
 
 // WebSocket endpoint.
 app.ws('/portfolio/ws', (ws, req) => {
-
     ws.isAlive = true;
     ws.on('pong', heartbeat);
 
@@ -123,8 +144,25 @@ app.ws('/portfolio/ws', (ws, req) => {
     });
 });
 
+const scopeRead = jwtAuthz(['read:portfolio']);
+const scopeFull = jwtAuthz(['read:portfolio', 'write:portfolio']);
+
+app.get('/portfolio/api/test', (req, res) => {
+    res.json({
+        message: 'Hello from a public endpoint!',
+    });
+});
+
+app.get('/portfolio/api/portfolio', checkJwt, scopeRead, (req, res) => {
+    res.json({
+        message: 'Hello from a private endpoint! You need to be authenticated and have a scope of read:messages to see this.',
+    });
+});
+
+app.post('/portfolio/api/portfolio', checkJwt, scopeFull, (req, res) => {});
+
 // Regularly ping clients to make sure they are still alive.
-const pingInterval = setInterval(function () {
+const pingInterval = setInterval(function() {
     wss.clients.forEach(function each(ws) {
         if (ws.isAlive === false) {
             return ws.terminate();
@@ -135,7 +173,7 @@ const pingInterval = setInterval(function () {
 }, config.pingInterval);
 
 // Regularly publish portfolio to all connected clients.
-const portfolioInterval = setInterval(async function () {
+const portfolioInterval = setInterval(async function() {
     portfolio = await fetchPortfolio();
     publishPortfolio(portfolio);
 }, config.dataFetchInterval);

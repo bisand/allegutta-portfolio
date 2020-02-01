@@ -11,8 +11,11 @@
   "license": "MIT",
   "dependencies": {
     "express": "^4.17.1",
+    "express-jwt": "^5.3.1",
+    "express-jwt-authz": "^2.3.1",
     "express-ws": "^4.0.0",
     "got": "^10.4.0",
+    "jwks-rsa": "^1.6.2",
     "node-rsa": "^1.0.7",
     "query-string": "^6.10.1",
     "restler": "^3.4.0",

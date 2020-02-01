@@ -14,10 +14,11 @@ import { HomeComponent } from './home/home.component';
 import { PortfolioEditorComponent } from './portfolio-editor/portfolio-editor.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ExternalApiComponent } from './external-api/external-api.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [AppComponent, NavBarComponent, ProfileComponent, HomeComponent, PortfolioEditorComponent, ExternalApiComponent],
-    imports: [BrowserModule, AppRoutingModule, HttpClientModule, NgbModule, FontAwesomeModule],
+    imports: [BrowserModule, AppRoutingModule, HttpClientModule, NgbModule, FontAwesomeModule, FormsModule],
     providers: [],
     bootstrap: [AppComponent],
 })

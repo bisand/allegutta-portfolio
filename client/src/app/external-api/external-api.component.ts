@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/api.service';
+import { IPortfolio } from '../home/home.component';
 
 @Component({
     selector: 'app-external-api',
@@ -8,13 +9,16 @@ import { ApiService } from 'src/app/api.service';
 })
 export class ExternalApiComponent implements OnInit {
     responseJson: string;
+    portfolio: IPortfolio;
 
-    constructor(private api: ApiService) {}
+    constructor(private api: ApiService) {
+        this.portfolio = { positions: [] };
+    }
 
     ngOnInit() {}
 
-    pingApi() {
-        this.api.ping$().subscribe(res => (this.responseJson = res));
+    loadPortfolio() {
+        this.api.loadPortfolio$().subscribe(res => (this.portfolio = res));
     }
 
     testApi() {

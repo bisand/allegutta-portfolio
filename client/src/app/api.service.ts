@@ -9,7 +9,7 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
-  ping$(): Observable<any> {
+  loadPortfolio$(): Observable<any> {
     return this.http.get('/portfolio/api/portfolio');
   }
 

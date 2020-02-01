@@ -54,6 +54,15 @@ async function fetchPortfolio() {
     return portfolio;
 }
 
+async function loadPortfolioFromDisk(){
+    let portfolio = {};
+    let portfolioPath = path.resolve('./portfolio_allegutta.json');
+    if (fs.existsSync(portfolioPath)) {
+        portfolio = JSON.parse(fs.readFileSync(portfolioPath, 'utf-8'));
+    }
+    return portfolio;
+}
+
 // Publish portfolio to given client.
 async function publishPortfolioToClient(client, portfolio) {
     try {
@@ -153,13 +162,12 @@ app.get('/portfolio/api/test', (req, res) => {
     });
 });
 
-app.get('/portfolio/api/portfolio', checkJwt, (req, res) => {
-    res.json({
-        message: 'Hello from a private endpoint! You need to be authenticated and have a scope of read:messages to see this.',
-    });
+app.get('/portfolio/api/portfolio', checkJwt, async (req, res) => {
+    const portfolio = await loadPortfolioFromDisk();
+    res.json(portfolio);
 });
 
-app.post('/portfolio/api/portfolio', checkJwt, scopeFull, (req, res) => {});
+app.post('/portfolio/api/portfolio', checkJwt, (req, res) => {});
 
 // Regularly ping clients to make sure they are still alive.
 const pingInterval = setInterval(function() {

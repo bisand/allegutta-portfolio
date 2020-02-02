@@ -34,12 +34,12 @@
                     <div class="dropdown-header" *ngIf="profile">
                         <img [src]="profile.picture" alt="Profile picture" class="nav-user-profile rounded-circle" style="width: 40px" /> {{ profile.name }}
                     </div>
-                    <div class="dropdown-item" *ngIf="profile">
-                        <a routerLink="/profile"> <fa-icon [icon]="faUser" class="mr-3"></fa-icon> Profile </a>
-                    </div>
-                    <div class="dropdown-item" *ngIf="profile">
-                        <a routerLink="/portfolio-editor"> <fa-icon [icon]="faEdit" class="mr-3"></fa-icon> Redigér Portefølje </a>
-                    </div>
+                    <button routerLink="/profile/" class="btn btn-link dropdown-item" *ngIf="profile">
+                        <fa-icon [icon]="faUser" class="mr-3"></fa-icon>Profile
+                    </button>
+                    <button routerLink="/portfolio-editor/" class="btn btn-link dropdown-item" *ngIf="profile">
+                        <fa-icon [icon]="faEdit" class="mr-3"></fa-icon>Redigér Portefølje
+                    </button>
                     <button (click)="auth.logout()" class="btn btn-link dropdown-item" id="qsLogoutBtn">
                         <fa-icon [icon]="faPowerOff" class="mr-3"></fa-icon> Log out
                     </button>

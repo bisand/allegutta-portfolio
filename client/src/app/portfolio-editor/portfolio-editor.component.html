@@ -1,1 +1,26 @@
-<p>portfolio-editor works!</p>
+<button (click)="loadPortfolio()">Load Portfolio</button>
+
+<div class="container">
+    <div class="panel panel-default">
+        <div class="panel-heading">Beholdning</div>
+        <div class="panel-body">
+            <input type="number" [(ngModel)]="portfolio.cash" />
+        </div>
+    </div>
+    <table class="table table-responsive">
+        <thead>
+            <th>Ticker</th>
+            <th>Antall</th>
+            <th>GAV</th>
+        </thead>
+        <tr *ngFor="let position of portfolio.positions">
+            <td><input type="text" [(ngModel)]="position.symbol" /></td>
+            <td><input type="number" [(ngModel)]="position.shares" /></td>
+            <td><input type="number" [(ngModel)]="position.avg_price" /></td>
+        </tr>
+    </table>
+
+    <pre *ngIf="responseJson">
+        <code>{{ responseJson | json }}</code>
+    </pre>
+</div>

@@ -1,24 +1,33 @@
-<nav class="navbar navbar-inverse">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Aksjespareklubben AlleGutta</a>
-        </div>
-        <ul class="nav navbar-nav">
-            <li class="nav-item">
-                <a routerLink="/">Home</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">Navbar w/ text</a>
+    <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarText"
+        aria-controls="navbarText"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+    >
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a routerLink="/" class="nav-link">Home <span class="sr-only">(current)</span></a>
             </li>
         </ul>
-        <ul class="nav navbar-nav navbar-right">
+        <ul class="navbar-nav mr-auto">
             <li *ngIf="auth.loggedIn === false">
                 <a href="#" (click)="auth.login()"><span class="glyphicon glyphicon-log-in"></span> Login</a>
             </li>
-            <li class="nav-item dropdown" style="white-space: nowrap;" *ngIf="auth.userProfile$ | async as profile" ngbDropdown>
-                <a ngbDropdownToggle class="nav-link dropdown-toggle" id="profileDropDown" data-toggle="dropdown">
-                    <!-- Profile image should be set to the profile picture from the id token -->
+        </ul>
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item dropdown" style="white-space: nowrap;" *ngIf="auth.userProfile$ | async as profile">
+                <a class="nav-link dropdown-toggle" id="profileDropDown" data-toggle="dropdown">
                     <img [src]="profile.picture" alt="Profile picture" class="nav-user-profile rounded-circle" style="width: 40px" />
                 </a>
-                <div class="dropdown-menu dropdown-menu-right" ngbDropdownMenu>
-                    <!-- Show the user's full name from the id token here -->
+                <div class="dropdown-menu dropdown-menu-right">
                     <div class="dropdown-header" *ngIf="profile">
                         {{ profile.name }}
                     </div>

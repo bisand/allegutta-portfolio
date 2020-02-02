@@ -3,8 +3,11 @@ import { WebSocketSubject } from 'rxjs/webSocket';
 
 export interface IPosition {
     symbol?: string;
+    name?: string;
     shares?: number;
     avg_price?: number;
+    cost_value?: number;
+    current_value?: number;
 }
 
 export interface IPortfolio {

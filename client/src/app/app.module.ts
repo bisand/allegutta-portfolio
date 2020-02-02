@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { registerLocaleData } from '@angular/common';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
@@ -18,7 +17,7 @@ import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [AppComponent, NavBarComponent, ProfileComponent, HomeComponent, PortfolioEditorComponent, ExternalApiComponent],
-    imports: [BrowserModule, AppRoutingModule, HttpClientModule, NgbModule, FontAwesomeModule, FormsModule],
+    imports: [BrowserModule, AppRoutingModule, HttpClientModule, FontAwesomeModule, FormsModule],
     providers: [],
     bootstrap: [AppComponent],
 })

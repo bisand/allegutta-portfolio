@@ -38,17 +38,22 @@ class YahooApi {
             lang: 'nb-NO',
             region: 'NO',
             symbols: tickers,
-            fields: 'shortName,longName,regularMarketChange,regularMarketChangePercent,regularMarketTime,regularMarketPrice,regularMarketDayHigh,regularMarketDayRange,regularMarketDayLow,regularMarketVolume,regularMarketPreviousClose',
+            fields:
+                'shortName,longName,regularMarketChange,regularMarketChangePercent,regularMarketTime,regularMarketPrice,regularMarketDayHigh,regularMarketDayRange,regularMarketDayLow,regularMarketVolume,regularMarketPreviousClose',
             corsDomain: 'finance.yahoo.com',
         });
 
         var quotes = await got(this.quotes_url, { searchParams })
             .then(res => {
-                return JSON.parse(res.body).quoteResponse.result;
+                if (res) {
+                    return JSON.parse(res.body).quoteResponse.result;
+                }
             })
             .catch(err => {
-                console.log(err.response.body);
-                return err.response.body;
+                if (err && err.response) {
+                    console.log(err.response.body);
+                    return err.response.body;
+                }
             });
 
         if (quotes) {
@@ -63,24 +68,24 @@ class YahooApi {
                     result.change_today = element.regularMarketChange;
                     result.change_today_percent = element.regularMarketChangePercent;
                     result.prev_close = element.regularMarketPreviousClose;
-                    result.cost_value = (result.avg_price * result.shares);
-                    result.current_value = (result.last_price * result.shares);
+                    result.cost_value = result.avg_price * result.shares;
+                    result.current_value = result.last_price * result.shares;
                     result.return = result.current_value - result.cost_value;
                     if (result.cost_value && result.cost_value !== 0) {
                         result.return_percent = (result.return / result.cost_value) * 100;
                     } else {
-                        result.return_percent
+                        result.return_percent;
                     }
 
-                    this.portfolio.market_value += (result.shares * element.regularMarketPrice);
-                    this.portfolio.market_value_prev += (result.shares * element.regularMarketPreviousClose);
-                    this.portfolio.market_value_max += (result.shares * element.regularMarketDayHigh);
-                    this.portfolio.market_value_min += (result.shares * element.regularMarketDayLow);
-                    this.portfolio.change_today_total += (result.shares * element.regularMarketChange);
+                    this.portfolio.market_value += result.shares * element.regularMarketPrice;
+                    this.portfolio.market_value_prev += result.shares * element.regularMarketPreviousClose;
+                    this.portfolio.market_value_max += result.shares * element.regularMarketDayHigh;
+                    this.portfolio.market_value_min += result.shares * element.regularMarketDayLow;
+                    this.portfolio.change_today_total += result.shares * element.regularMarketChange;
                 }
                 this.portfolio.equity = this.portfolio.market_value + this.portfolio.cash;
                 this.portfolio.change_today_percent = (this.portfolio.change_today_total / this.portfolio.market_value_prev) * 100;
-                this.portfolio.change_total = (this.portfolio.market_value - this.portfolio.cost_value);
+                this.portfolio.change_total = this.portfolio.market_value - this.portfolio.cost_value;
                 this.portfolio.change_total_percent = (this.portfolio.change_total / this.portfolio.cost_value) * 100;
             });
         }

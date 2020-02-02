@@ -7,16 +7,18 @@
             <input type="number" [(ngModel)]="portfolio.cash" />
         </div>
     </div>
-    <table class="table table-responsive">
+    <table class="table">
         <thead>
             <th>Ticker</th>
             <th>Antall</th>
             <th>GAV</th>
+            <th></th>
         </thead>
         <tr *ngFor="let position of portfolio.positions">
-            <td><input type="text" [(ngModel)]="position.symbol" /></td>
+            <td><input type="text" [(ngModel)]="position.symbol" class="input-sm" /></td>
             <td><input type="number" [(ngModel)]="position.shares" /></td>
-            <td><input type="number" [(ngModel)]="position.avg_price" /></td>
+            <td><input type="number" step="0.01" [(ngModel)]="position.avg_price" /></td>
+            <td><fa-icon [icon]="faTrash" class="mr-3"></fa-icon></td>
         </tr>
     </table>
 

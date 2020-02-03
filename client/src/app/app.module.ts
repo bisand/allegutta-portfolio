@@ -14,11 +14,12 @@ import { PortfolioEditorComponent } from './portfolio-editor/portfolio-editor.co
 import { HttpClientModule } from '@angular/common/http';
 import { ExternalApiComponent } from './external-api/external-api.component';
 import { FormsModule } from '@angular/forms';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 
 @NgModule({
     declarations: [AppComponent, NavBarComponent, ProfileComponent, HomeComponent, PortfolioEditorComponent, ExternalApiComponent],
     imports: [BrowserModule, AppRoutingModule, HttpClientModule, FontAwesomeModule, FormsModule],
-    providers: [],
+    providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

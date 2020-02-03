@@ -4,27 +4,35 @@ import { ApiService } from '../api.service';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-portfolio-editor',
-  templateUrl: './portfolio-editor.component.html',
-  styleUrls: ['./portfolio-editor.component.css']
+    selector: 'app-portfolio-editor',
+    templateUrl: './portfolio-editor.component.html',
+    styleUrls: ['./portfolio-editor.component.css'],
 })
 export class PortfolioEditorComponent implements OnInit {
-  responseJson: string;
-  portfolio: IPortfolio;
+    responseJson: string;
+    portfolio: IPortfolio;
+    statusText: string;
 
-  faTrash = faTrash;
+    faTrash = faTrash;
 
-  constructor(private api: ApiService) {
-      this.portfolio = { positions: [] };
-  }
+    constructor(private api: ApiService) {
+        this.portfolio = { positions: [] };
+    }
 
-  ngOnInit() {}
+    ngOnInit() {}
 
-  loadPortfolio() {
-      this.api.loadPortfolio$().subscribe(res => (this.portfolio = res));
-  }
+    loadPortfolio() {
+        this.api.loadPortfolio$().subscribe(res => {
+            this.portfolio = res;
+            this.statusText = 'Porteføljen er lastet.';
+        });
+    }
 
-  testApi() {
-      this.api.test$().subscribe(res => (this.responseJson = res));
-  }
+    savePortfolio() {
+        this.statusText = 'Porteføljen er lagret.';
+    }
+
+    testApi() {
+        this.api.test$().subscribe(res => (this.responseJson = res));
+    }
 }

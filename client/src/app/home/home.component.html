@@ -1,7 +1,7 @@
 <div class="container">
-    <div class="panel panel-default">
-        <div class="panel-heading">Porteføljens verdi</div>
-        <div class="panel-body">
+    <div class="card card-default mt-3">
+        <div class="card-header">Porteføljens verdi</div>
+        <div class="card-body">
             <div class="jumbotron text-center">
                 <h2>Egenkapital</h2>
                 <h1>{{ portfolio.equity | currency: 'NOK':'':'0.0-0':'nb' }}</h1>
@@ -32,36 +32,36 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default">
-        <div class="panel-heading">Beholdning</div>
-        <div class="panel-body">
+    <div class="card card-default mt-3">
+        <div class="card-header">Beholdning</div>
+        <div class="card-body">
             <table class="table table-striped table-hover table-responsive">
                 <thead>
                     <tr>
-                        <th class="hidden-md hidden-lg">Ticker</th>
-                        <th class="hidden-xs hidden-sm">Navn</th>
-                        <th class="text-right hidden-xs hidden-sm">Antall</th>
-                        <th class="text-right hidden-xs hidden-sm">GAV</th>
+                        <th class="hidden-sm-up">Ticker</th>
+                        <th class="hidden-sm-down">Navn</th>
+                        <th class="text-right hidden-sm-down">Antall</th>
+                        <th class="text-right hidden-sm-down">GAV</th>
                         <th class="text-right text-nowrap">I dag %</th>
-                        <th class="text-right hidden-xs hidden-sm">Kost</th>
+                        <th class="text-right hidden-sm-down">Kost</th>
                         <th class="text-right">Siste</th>
-                        <th class="text-right hidden-xs hidden-sm">Verdi</th>
+                        <th class="text-right hidden-sm-down">Verdi</th>
                         <th class="text-right text-nowrap">Avkastning %</th>
                         <th class="text-right">Avkastning</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let position of portfolio.positions">
-                        <td class="hidden-md hidden-lg">{{ position.symbol }}</td>
-                        <td class="hidden-xs hidden-sm">{{ position.name }}</td>
-                        <td class="text-right hidden-xs hidden-sm">{{ position.shares | number: '0.2-2':'nb' }}</td>
-                        <td class="text-right hidden-xs hidden-sm">{{ position.avg_price | currency: 'NOK':'':'0.2-2':'nb' }}</td>
+                        <td class="hidden-sm-up">{{ position.symbol }}</td>
+                        <td class="hidden-sm-down">{{ position.name }}</td>
+                        <td class="text-right hidden-sm-down">{{ position.shares | number: '0.2-2':'nb' }}</td>
+                        <td class="text-right hidden-sm-down">{{ position.avg_price | currency: 'NOK':'':'0.2-2':'nb' }}</td>
                         <td class="text-right" [ngStyle]="{ color: position.change_today_percent >= 0 ? 'blue' : 'red' }">
                             {{ position.change_today_percent | number: '0.2-2':'nb' }} %
                         </td>
-                        <td class="text-right hidden-xs hidden-sm">{{ position.cost_value | currency: 'NOK':'':'0.0-0':'nb' }}</td>
+                        <td class="text-right hidden-sm-down">{{ position.cost_value | currency: 'NOK':'':'0.0-0':'nb' }}</td>
                         <td class="text-right">{{ position.last_price | currency: 'NOK':'':'0.2-2':'nb' }}</td>
-                        <td class="text-right hidden-xs hidden-sm">{{ position.current_value | currency: 'NOK':'':'0.0-0':'nb' }}</td>
+                        <td class="text-right hidden-sm-down">{{ position.current_value | currency: 'NOK':'':'0.0-0':'nb' }}</td>
                         <td class="text-right" [ngStyle]="{ color: position.return_percent >= 0 ? 'blue' : 'red' }">
                             {{ position.return_percent | number: '0.2-2':'nb' }} %
                         </td>
@@ -72,14 +72,14 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th class="hidden-md hidden-lg font-weight-bold">Total</th>
-                        <th class="hidden-xs hidden-sm font-weight-bold">Total</th>
-                        <td class="text-right hidden-xs hidden-sm"></td>
-                        <th class="text-right hidden-xs hidden-sm"></th>
+                        <th class="hidden-sm-up font-weight-bold">Total</th>
+                        <th class="hidden-sm-down font-weight-bold">Total</th>
+                        <td class="text-right hidden-sm-down"></td>
+                        <th class="text-right hidden-sm-down"></th>
                         <th class="text-right"></th>
-                        <th class="text-right hidden-xs hidden-sm"></th>
+                        <th class="text-right hidden-sm-down"></th>
                         <th class="text-right"></th>
-                        <th class="text-right hidden-xs hidden-sm"></th>
+                        <th class="text-right hidden-sm-down"></th>
                         <th class="text-right" [ngStyle]="{ color: portfolio.change_total_percent >= 0 ? 'blue' : 'red' }">
                             {{ portfolio.change_total_percent | number: '0.2-2':'nb' }} %
                         </th>

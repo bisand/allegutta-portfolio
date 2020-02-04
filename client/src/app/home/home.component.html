@@ -42,9 +42,9 @@
                         <th class="d-md-none">Ticker</th>
                         <th class="d-none d-md-table-cell">Navn</th>
                         <th class="text-right d-none d-lg-table-cell">Antall</th>
-                        <th class="text-right d-none d-lg-table-cell">GAV</th>
-                        <th class="text-right">I dag %</th>
+                        <th class="text-right d-none d-lg-table-cell" title="Gjennomsnittlig anskaffelsesverdi">GAV</th>
                         <th class="text-right d-none d-lg-table-cell">Kost</th>
+                        <th class="text-right">I dag %</th>
                         <th class="text-right">Siste</th>
                         <th class="text-right d-none d-md-table-cell">Verdi</th>
                         <th class="text-right">Avkastning %</th>
@@ -61,10 +61,10 @@
                         </td>
                         <td class="text-right d-none d-lg-table-cell">{{ position.shares | number: '0.0-0':'nb' }}</td>
                         <td class="text-right d-none d-lg-table-cell">{{ position.avg_price | currency: 'NOK':'':'0.2-2':'nb' }}</td>
+                        <td class="text-right d-none d-lg-table-cell ">{{ position.cost_value | currency: 'NOK':'':'0.0-0':'nb' }}</td>
                         <td class="text-right" [ngStyle]="{ color: position.change_today_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
                             {{ position.change_today_percent | number: '0.2-2':'nb' }} %
                         </td>
-                        <td class="text-right d-none d-lg-table-cell ">{{ position.cost_value | currency: 'NOK':'':'0.0-0':'nb' }}</td>
                         <td class="text-right">{{ position.last_price | currency: 'NOK':'':'0.2-2':'nb' }}</td>
                         <td class="text-right d-none d-md-table-cell ">{{ position.current_value | currency: 'NOK':'':'0.0-0':'nb' }}</td>
                         <td class="text-right" [ngStyle]="{ color: position.return_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">

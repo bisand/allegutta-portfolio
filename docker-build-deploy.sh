@@ -1,7 +1,9 @@
 #!/bin/bash
 
+npm install
 cd client
+npm install
 ng build --prod=true
 cd ..
-docker build -t bisand/allegutta-portfolio .
-docker push bisand/allegutta-portfolio
+sudo docker build -t bisand/allegutta-portfolio .
+sudo docker push bisand/allegutta-portfolio

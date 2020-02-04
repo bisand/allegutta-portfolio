@@ -10,7 +10,7 @@ class YahooApi {
 
     async get_portfolio() {
         this.portfolio = {};
-        var portfolioPath = path.resolve('./portfolio_allegutta.json');
+        var portfolioPath = path.resolve('./data/portfolio_allegutta.json');
         if (fs.existsSync(portfolioPath)) {
             this.portfolio = JSON.parse(fs.readFileSync(portfolioPath, 'utf-8'));
         }
@@ -98,8 +98,8 @@ class YahooApi {
         if (!portfolio)
             return;
 
-        var portfolioPath = path.resolve('./portfolio_allegutta.json');
-        var backupPortfolioPath = path.resolve('./portfolio_allegutta_backup_' + new Date().valueOf() + '.json');
+        var portfolioPath = path.resolve('./data/portfolio_allegutta.json');
+        var backupPortfolioPath = path.resolve('./data/portfolio_allegutta_backup_' + new Date().valueOf() + '.json');
         fs.copyFileSync(portfolioPath, backupPortfolioPath);
         fs.writeFileSync(portfolioPath, JSON.stringify(portfolio))
         this.portfolio = portfolio;

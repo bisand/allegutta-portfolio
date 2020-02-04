@@ -42,7 +42,7 @@ const checkJwt = jwt({
 });
 
 function readConfigFile() {
-    var configPath = path.resolve('./server.config.json');
+    var configPath = path.resolve('./config/server.config.json');
     if (fs.existsSync(configPath)) {
         this.portfolio = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
     }
@@ -57,7 +57,7 @@ async function fetchPortfolio() {
 
 async function loadPortfolioFromDisk() {
     let portfolio = {};
-    let portfolioPath = path.resolve('./portfolio_allegutta.json');
+    let portfolioPath = path.resolve('./data/portfolio_allegutta.json');
     if (fs.existsSync(portfolioPath)) {
         portfolio = JSON.parse(fs.readFileSync(portfolioPath, 'utf-8'));
     }

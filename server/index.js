@@ -9,6 +9,7 @@ const jwt = require('express-jwt');
 const jwtAuthz = require('express-jwt-authz');
 const jwksRsa = require('jwks-rsa');
 const yahoo = require('./yahoo');
+const dbRepo = require('./repository');
 
 const app = express();
 const wsInstance = enableWs(app);
@@ -192,5 +193,8 @@ const portfolioInterval = setInterval(async function () {
     portfolio = await fetchPortfolio();
     publishPortfolio(portfolio);
 }, config.dataFetchInterval);
+
+const repo = new dbRepo.DataRepository('./data/allegutta.db');
+repo.init();
 
 app.listen(4000);

@@ -65,3 +65,4 @@ typings/
 
 # Angular dist dir
 client_dist
+server_dist

@@ -16,6 +16,7 @@ RUN npm ci --only=production
 COPY . .
 
 RUN mv client_dist public
+RUN mv server_dist server
 
 EXPOSE 3000
 CMD [ "node", "server/index.js" ]

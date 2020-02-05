@@ -2,8 +2,9 @@
   "name": "allegutta-portfolio",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server_dist/index.js",
   "scripts": {
+    "start": "tsc && node server_dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -21,7 +22,15 @@
     "query-string": "^6.10.1",
     "restler": "^3.4.0",
     "sqlite3": "^4.1.1",
+    "sqlite3po": "^1.6.1",
     "unirest": "^0.6.0",
     "ws": "^7.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.2",
+    "@types/express-ws": "^3.0.0",
+    "@types/sqlite3": "^3.1.6",
+    "tslint": "^6.0.0",
+    "typescript": "^3.7.5"
   }
 }

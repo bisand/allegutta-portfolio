@@ -1,16 +1,19 @@
-const path = require('path');
-const fs = require('fs');
-const got = require('got');
-const queryString = require('query-string');
+import path from 'path';
+import fs from 'fs';
+import got from 'got';
+import queryString from 'query-string';
+import { Portfolio } from './models/portfolio';
 
-class YahooApi {
+export class YahooApi {
+    quotesUrl: string;
+    portfolio: Portfolio;
     constructor() {
-        this.quotes_url = 'https://query2.finance.yahoo.com/v7/finance/quote';
+        this.quotesUrl = 'https://query2.finance.yahoo.com/v7/finance/quote';
     }
 
-    async get_portfolio() {
-        this.portfolio = {};
-        var portfolioPath = path.resolve('./data/portfolio_allegutta.json');
+    async get_portfolio(): Promise<Portfolio> {
+        this.portfolio = new Portfolio();
+        const portfolioPath = path.resolve('./data/portfolio_allegutta.json');
         if (fs.existsSync(portfolioPath)) {
             this.portfolio = JSON.parse(fs.readFileSync(portfolioPath, 'utf-8'));
         }
@@ -24,7 +27,7 @@ class YahooApi {
         this.portfolio.change_today_total = 0.0;
         this.portfolio.change_today_percent = 0.0;
 
-        var tickers = '';
+        let tickers = '';
         if (this.portfolio && this.portfolio.positions) {
             this.portfolio.positions.forEach(element => {
                 tickers += element.symbol + ',';
@@ -33,7 +36,7 @@ class YahooApi {
             tickers = tickers.substr(0, tickers.length - 1);
         }
 
-        const searchParams = new URLSearchParams({
+        const searchParams: any = {
             formatted: false,
             lang: 'nb-NO',
             region: 'NO',
@@ -41,9 +44,9 @@ class YahooApi {
             fields:
                 'shortName,longName,regularMarketChange,regularMarketChangePercent,regularMarketTime,regularMarketPrice,regularMarketDayHigh,regularMarketDayRange,regularMarketDayLow,regularMarketVolume,regularMarketPreviousClose',
             corsDomain: 'finance.yahoo.com',
-        });
+        };
 
-        var quotes = await got(this.quotes_url, { searchParams })
+        const quotes = await got(this.quotesUrl, { searchParams })
             .then(res => {
                 if (res) {
                     return JSON.parse(res.body).quoteResponse.result;
@@ -58,8 +61,8 @@ class YahooApi {
 
         if (quotes) {
             quotes.forEach(element => {
-                var symbol = element.symbol;
-                var result = this.portfolio.positions.find(obj => {
+                const symbol = element.symbol;
+                const result = this.portfolio.positions.find(obj => {
                     return obj.symbol === symbol;
                 });
                 if (result) {
@@ -74,7 +77,7 @@ class YahooApi {
                     if (result.cost_value && result.cost_value !== 0) {
                         result.return_percent = (result.return / result.cost_value) * 100;
                     } else {
-                        result.return_percent;
+                        result.return_percent = 0;
                     }
 
                     this.portfolio.market_value += result.shares * element.regularMarketPrice;
@@ -93,15 +96,13 @@ class YahooApi {
         return this.portfolio;
     }
 
-    savePortfolio(portfolio) {
+    savePortfolio(portfolio: Portfolio) {
+        if (!portfolio) return;
 
-        if (!portfolio)
-            return;
-
-        var portfolioPath = path.resolve('./data/portfolio_allegutta.json');
-        var backupPortfolioPath = path.resolve('./data/portfolio_allegutta_backup_' + new Date().valueOf() + '.json');
+        const portfolioPath = path.resolve('./data/portfolio_allegutta.json');
+        const backupPortfolioPath = path.resolve('./data/portfolio_allegutta_backup_' + new Date().valueOf() + '.json');
         fs.copyFileSync(portfolioPath, backupPortfolioPath);
-        fs.writeFileSync(portfolioPath, JSON.stringify(portfolio))
+        fs.writeFileSync(portfolioPath, JSON.stringify(portfolio));
         this.portfolio = portfolio;
         return portfolio;
     }

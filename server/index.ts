@@ -1,26 +1,32 @@
-const express = require('express');
-const enableWs = require('express-ws');
-const bodyParser = require('body-parser');
-const WebSocket = require('ws');
-const path = require('path');
-const fs = require('fs');
-const os = require('os');
-const jwt = require('express-jwt');
-const jwtAuthz = require('express-jwt-authz');
-const jwksRsa = require('jwks-rsa');
-const yahoo = require('./yahoo');
-const dbRepo = require('./repository');
+import express from 'express';
+import expressWs from 'express-ws';
+import bodyParser from 'body-parser';
+import WebSocket from 'ws';
+import path from 'path';
+import fs from 'fs';
+import os from 'os';
+import jwt from 'express-jwt';
+import jwtAuthz from 'express-jwt-authz';
+import jwksRsa from 'jwks-rsa';
+import { YahooApi } from './yahoo';
+import { DataRepository } from './repository';
+import { Portfolio } from './models/portfolio';
 
-const app = express();
-const wsInstance = enableWs(app);
+interface ExtWebSocket extends WebSocket {
+    isAlive: boolean;
+}
+
+const appBase = express();
+const wsInstance = expressWs(appBase);
 const wss = wsInstance.getWss();
+const { app } = wsInstance;
 
 let config = {
     dataFetchInterval: 11533,
     pingInterval: 31532,
 };
 
-let portfolio = undefined;
+let portfolio: Portfolio;
 
 // Authentication middleware. When used, the
 // Access Token must exist and be verified against
@@ -43,22 +49,22 @@ const checkJwt = jwt({
 });
 
 function readConfigFile() {
-    var configPath = path.resolve('./config/server.config.json');
+    const configPath = path.resolve('./config/server.config.json');
     if (fs.existsSync(configPath)) {
-        this.portfolio = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
+        config = JSON.parse(fs.readFileSync(configPath, 'utf-8'));
     }
 }
 
 // Fetch portfolio from Yahoo Finance.
-async function fetchPortfolio() {
-    const yahooApi = new yahoo.YahooApi();
-    const portfolio = await yahooApi.get_portfolio();
+async function fetchPortfolio(): Promise<Portfolio> {
+    const yahooApi = new YahooApi();
+    const portfolio: Portfolio = await yahooApi.get_portfolio();
     return portfolio;
 }
 
 async function loadPortfolioFromDisk() {
     let portfolio = {};
-    let portfolioPath = path.resolve('./data/portfolio_allegutta.json');
+    const portfolioPath = path.resolve('./data/portfolio_allegutta.json');
     if (fs.existsSync(portfolioPath)) {
         portfolio = JSON.parse(fs.readFileSync(portfolioPath, 'utf-8'));
     }
@@ -66,7 +72,7 @@ async function loadPortfolioFromDisk() {
 }
 
 // Publish portfolio to given client.
-async function publishPortfolioToClient(client, portfolio) {
+async function publishPortfolioToClient(client: WebSocket, portfolio: Portfolio) {
     try {
         if (client.readyState === WebSocket.OPEN) {
             client.send(JSON.stringify(portfolio));
@@ -77,11 +83,12 @@ async function publishPortfolioToClient(client, portfolio) {
 }
 
 // Publish portfolio to all connected clients.
-async function publishPortfolio(portfolio) {
+async function publishPortfolio(portfolio: Portfolio) {
     try {
-        wss.clients.forEach(function each(client) {
-            if (client.readyState === WebSocket.OPEN && client.isAlive) {
-                client.send(JSON.stringify(portfolio));
+        wss.clients.forEach(function each(ws) {
+            const extWs = ws as ExtWebSocket;
+            if (extWs.readyState === WebSocket.OPEN && extWs.isAlive) {
+                extWs.send(JSON.stringify(portfolio));
             }
         });
     } catch (error) {
@@ -90,7 +97,7 @@ async function publishPortfolio(portfolio) {
 }
 
 // Parse incoming messages and act accordingly.
-async function parseMessage(msg, ws) {
+async function parseMessage(msg: any, ws: ExtWebSocket) {
     if ((msg && msg[0] === '{') || msg[0] === '[') {
         msg = JSON.parse(msg);
         if (msg.command && msg.command === 'start') {
@@ -104,7 +111,8 @@ async function parseMessage(msg, ws) {
 }
 
 // Empty function used in heartbeat.
-function noop() { }
+// tslint:disable-next-line: no-empty
+function noop() {}
 
 // Heartbeat function.
 function heartbeat() {
@@ -115,17 +123,17 @@ function heartbeat() {
 readConfigFile();
 
 // Options for serving static files via express.
-var options = {
+const options: any = {
     dotfiles: 'ignore',
     extensions: ['htm', 'html', 'js', 'css'],
     maxAge: '1d',
-    setHeaders: function (res, path, stat) {
+    setHeaders(res) {
         res.set('x-timestamp', Date.now());
     },
 };
 
 // Locate static files and serve them.
-var dirName = path.join(__dirname, '/../public');
+let dirName = path.join(__dirname, '/../public');
 if (!fs.existsSync(dirName)) {
     dirName = path.join(__dirname, '/../client_dist');
 }
@@ -138,20 +146,21 @@ app.get('/', (req, res) => {
 });
 
 // WebSocket endpoint.
-app.ws('/portfolio/ws', (ws, req) => {
-    ws.isAlive = true;
-    ws.on('pong', heartbeat);
+app.ws('/portfolio/ws', (ws: WebSocket, req: any) => {
+    const extWs = ws as ExtWebSocket;
+    extWs.isAlive = true;
+    extWs.on('pong', heartbeat);
 
-    ws.on('message', async msg => {
+    extWs.on('message', async msg => {
         try {
-            msg = await parseMessage(msg, ws);
+            msg = await parseMessage(msg, extWs);
             console.log(msg);
         } catch (error) {
             console.log(error);
         }
     });
 
-    ws.on('close', async () => {
+    extWs.on('close', async () => {
         console.log('WebSocket was closed');
     });
 });
@@ -166,35 +175,44 @@ app.get('/portfolio/api/test', (req, res) => {
 });
 
 app.get('/portfolio/api/portfolio', checkJwt, async (req, res) => {
-    const portfolio = await loadPortfolioFromDisk();
-    res.json(portfolio);
+    const result = await loadPortfolioFromDisk();
+    res.json(result);
 });
 
 app.post('/portfolio/api/portfolio', checkJwt, (req, res) => {
     console.log(req.body);
-    var portfolio = req.body;
-    const yahooApi = new yahoo.YahooApi();
+    portfolio = req.body;
+    const yahooApi = new YahooApi();
     yahooApi.savePortfolio(portfolio);
 });
 
 // Regularly ping clients to make sure they are still alive.
-const pingInterval = setInterval(function () {
+const pingInterval = setInterval(() => {
     wss.clients.forEach(function each(ws) {
-        if (ws.isAlive === false) {
-            return ws.terminate();
+        const extWs = ws as ExtWebSocket;
+        if (extWs.isAlive === false) {
+            return extWs.terminate();
         }
-        ws.isAlive = false;
-        ws.ping(noop);
+        extWs.isAlive = false;
+        extWs.ping(noop);
     });
 }, config.pingInterval);
 
 // Regularly publish portfolio to all connected clients.
-const portfolioInterval = setInterval(async function () {
+const portfolioInterval = setInterval(async () => {
     portfolio = await fetchPortfolio();
     publishPortfolio(portfolio);
 }, config.dataFetchInterval);
 
-const repo = new dbRepo.DataRepository('./data/allegutta.db');
+const repo = new DataRepository('./data/allegutta.db');
 repo.init();
+const data = repo
+    .getPortfolio('Test321')
+    .then(res => {
+        console.log(res);
+    })
+    .catch(err => {
+        console.log(err);
+    });
 
 app.listen(4000);

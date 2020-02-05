@@ -1,18 +1,18 @@
 import { PortfolioPosition } from './position';
 
 export class Portfolio {
-    id: number;
-    name: number;
-    cash: number;
-    equity: number;
-    cost_value: number;
-    market_value: number;
-    market_value_prev: number;
-    market_value_max: number;
-    market_value_min: number;
-    change_today_total: number;
-    change_today_percent: number;
-    change_total: number;
-    change_total_percent: number;
-    positions: PortfolioPosition[];
+    public id: number = 0;
+    public name: string = '';
+    public cash: number = 0.0;
+    public equity: number = 0.0;
+    public cost_value: number = 0.0;
+    public market_value: number = 0.0;
+    public market_value_prev: number = 0.0;
+    public market_value_max: number = 0.0;
+    public market_value_min: number = 0.0;
+    public change_today_total: number = 0.0;
+    public change_today_percent: number = 0.0;
+    public change_total: number = 0.0;
+    public change_total_percent: number = 0.0;
+    public positions: PortfolioPosition[] = [] as PortfolioPosition[];
 }

@@ -62,11 +62,26 @@ async function fetchPortfolio(): Promise<Portfolio> {
     return portfolio;
 }
 
-async function loadPortfolioFromDisk() {
-    let portfolio = {};
+async function loadPortfolioFromDisk(): Promise<Portfolio> {
+    const portfolio: Portfolio = new Portfolio();
     const portfolioPath = path.resolve('./data/portfolio_allegutta.json');
     if (fs.existsSync(portfolioPath)) {
-        portfolio = JSON.parse(fs.readFileSync(portfolioPath, 'utf-8'));
+        Object.assign(portfolio, JSON.parse(fs.readFileSync(portfolioPath, 'utf-8')) as Portfolio);
+    }
+    if (!portfolio.name) {
+        portfolio.name = '';
+    }
+    return portfolio;
+}
+
+async function archivePortfolioFiles(): Promise<Portfolio> {
+    const portfolio: Portfolio = new Portfolio();
+    const portfolioPath = path.resolve('./data/portfolio_allegutta.json');
+    if (fs.existsSync(portfolioPath)) {
+        Object.assign(portfolio, JSON.parse(fs.readFileSync(portfolioPath, 'utf-8')) as Portfolio);
+    }
+    if (!portfolio.name) {
+        portfolio.name = '';
     }
     return portfolio;
 }
@@ -205,14 +220,12 @@ const portfolioInterval = setInterval(async () => {
 }, config.dataFetchInterval);
 
 const repo = new DataRepository('./data/allegutta.db');
-repo.init();
-const data = repo
-    .getPortfolio('Test321')
-    .then(res => {
-        console.log(res);
-    })
-    .catch(err => {
+loadPortfolioFromDisk().then(async portfolio => {
+    await repo.initAsync();
+    await repo.importPortfolioAsync(portfolio);
+    const data = await repo.getPortfolioAsync('AlleGutta').catch(err => {
         console.log(err);
     });
+});
 
 app.listen(4000);

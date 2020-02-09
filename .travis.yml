@@ -7,9 +7,9 @@ node_js:
 cache:
   directories:
      - ./node_modules
-
-install:
-  - npm install
+     - ./client/node_modules
+     - ./client-dist
+     - ./server-dist
 
 script:
   - build-all.sh

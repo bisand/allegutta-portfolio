@@ -140,7 +140,7 @@ readConfigFile();
 // Options for serving static files via express.
 const options: any = {
     dotfiles: 'ignore',
-    extensions: ['htm', 'html', 'js', 'css'],
+    extensions: ['htm', 'html', 'js', 'css', 'png', 'ico', 'gif'],
     maxAge: '1d',
     setHeaders(res) {
         res.set('x-timestamp', Date.now());

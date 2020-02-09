@@ -16,4 +16,4 @@ cache:
 
 script:
   - ./build-all.sh
-
+  - ./docker-deploy.sh

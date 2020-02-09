@@ -1,7 +1,7 @@
 #!/bin/bash
 
 npm install
-tsc -p tsconfig.json
+npm run-script build
 cd client
 npm install
 ng build --prod=true

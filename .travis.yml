@@ -12,5 +12,5 @@ cache:
      - ./server-dist
 
 script:
-  - build-all.sh
+  - ./build-all.sh
 

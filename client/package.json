@@ -28,6 +28,7 @@
     "highlight.js": "^9.18.1",
     "ngx-highlightjs": "^4.0.2",
     "rxjs": "~6.4.0",
+    "rxjs-compat": "^6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.9.1"
   },

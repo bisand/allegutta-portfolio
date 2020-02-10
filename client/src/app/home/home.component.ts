@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { WebSocketSubject } from 'rxjs/webSocket';
+import { WebsocketService } from '../websocket.service';
 
 declare var $: any;
 
@@ -35,24 +35,13 @@ export interface IPortfolio {
 export class HomeComponent implements OnInit {
     public portfolio: IPortfolio;
 
-    private socket$: WebSocketSubject<object>;
-
-    constructor() {
+    constructor(private wss: WebsocketService) {
         this.portfolio = { positions: [] };
-
-        const socketProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        let echoSocketUrl = socketProtocol + '//' + window.location.hostname + ':' + window.location.port;
-
-        echoSocketUrl += '/portfolio/ws/';
-        this.socket$ = new WebSocketSubject(echoSocketUrl);
-
-        this.socket$.subscribe(
+        this.wss.init().subscribe(
             message => (this.portfolio = Object.assign({} as IPortfolio, message)),
             err => console.error(err),
             () => console.warn('Completed!'),
         );
-        const command = { command: 'start' };
-        this.socket$.next(command);
     }
 
     ngOnInit() {

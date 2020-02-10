@@ -60,16 +60,23 @@ export class YahooApi {
             });
 
         if (quotes) {
+            const currentDay = new Date().getDate();
+            let newDay: boolean = false;
             quotes.forEach(element => {
                 const symbol = element.symbol;
+                const symbolDate = new Date(element.regularMarketTime * 1000);
+                const symbolDay = symbolDate.getDate();
+                if (currentDay === symbolDay) {
+                    newDay = true;
+                }
                 const result = this.portfolio.positions.find(obj => {
                     return obj.symbol === symbol;
                 });
                 if (result) {
                     result.name = element.longName;
                     result.last_price = element.regularMarketPrice;
-                    result.change_today = element.regularMarketChange;
-                    result.change_today_percent = element.regularMarketChangePercent;
+                    result.change_today = currentDay === symbolDay ? element.regularMarketChange : 0.0;
+                    result.change_today_percent = currentDay === symbolDay ? element.regularMarketChangePercent : 0.0;
                     result.prev_close = element.regularMarketPreviousClose;
                     result.cost_value = result.avg_price * result.shares;
                     result.current_value = result.last_price * result.shares;
@@ -90,6 +97,11 @@ export class YahooApi {
                 this.portfolio.change_today_percent = (this.portfolio.change_today_total / this.portfolio.market_value_prev) * 100;
                 this.portfolio.change_total = this.portfolio.market_value - this.portfolio.cost_value;
                 this.portfolio.change_total_percent = (this.portfolio.change_total / this.portfolio.cost_value) * 100;
+
+                if (!newDay) {
+                    this.portfolio.change_today_total = 0.0;
+                    this.portfolio.change_today_percent = 0.0;
+                }
             });
         }
 

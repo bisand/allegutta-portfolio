@@ -91,7 +91,7 @@ export class YahooApi {
                     this.portfolio.market_value_prev += result.shares * element.regularMarketPreviousClose;
                     this.portfolio.market_value_max += result.shares * element.regularMarketDayHigh;
                     this.portfolio.market_value_min += result.shares * element.regularMarketDayLow;
-                    this.portfolio.change_today_total += result.shares * element.regularMarketChange;
+                    this.portfolio.change_today_total += currentDay === symbolDay ? result.shares * element.regularMarketChange : 0.0;
                 }
                 this.portfolio.equity = this.portfolio.market_value + this.portfolio.cash;
                 this.portfolio.change_today_percent = (this.portfolio.change_today_total / this.portfolio.market_value_prev) * 100;

@@ -219,13 +219,13 @@ const portfolioInterval = setInterval(async () => {
     publishPortfolio(portfolio);
 }, config.dataFetchInterval);
 
-//const repo = new DataRepository('./data/allegutta.db');
-//loadPortfolioFromDisk().then(async portfolio => {
+// const repo = new DataRepository('./data/allegutta.db');
+// loadPortfolioFromDisk().then(async portfolio => {
 //    await repo.initAsync();
 //    await repo.importPortfolioAsync(portfolio);
 //    const data = await repo.getPortfolioAsync('AlleGutta').catch(err => {
 //        console.log(err);
 //    });
-//});
+// });
 
 app.listen(4000);

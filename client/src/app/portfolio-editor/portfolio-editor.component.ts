@@ -19,9 +19,10 @@ export class PortfolioEditorComponent implements OnInit {
     faPlus = faPlus;
 
     constructor(private api: ApiService) {
-        this.portfolio = { positions: [] };
-        this.newPosition = {};
+        this.portfolio = { positions: [] } as IPortfolio;
+        this.newPosition = {} as IPosition;
         this.portfolioLoaded = false;
+        this.positionToDelete = {} as IPosition;
     }
 
     ngOnInit() {

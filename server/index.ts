@@ -16,6 +16,7 @@ interface ExtWebSocket extends WebSocket {
     isAlive: boolean;
 }
 
+let connectedClients: number = 0;
 const appBase = express();
 const wsInstance = expressWs(appBase);
 const wss = wsInstance.getWss();
@@ -176,16 +177,19 @@ app.ws('/portfolio/ws', (ws: WebSocket, req: any) => {
     });
 
     extWs.on('close', async () => {
-        console.log('WebSocket was closed');
+        connectedClients--;
+        console.log('WebSocket was closed. ' + connectedClients + ' active connections.');
     });
+    connectedClients++;
+    console.log('WebSocket connected. ' + connectedClients + ' active connections.');
 });
 
 const scopeRead = jwtAuthz(['read:portfolio']);
 const scopeFull = jwtAuthz(['read:portfolio', 'write:portfolio']);
 
-app.get('/portfolio/api/test', (req, res) => {
+app.get('/portfolio/api/info', (req, res) => {
     res.json({
-        message: 'Hello from a public endpoint!',
+        connectedClients,
     });
 });
 

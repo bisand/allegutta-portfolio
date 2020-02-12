@@ -17,11 +17,12 @@ import { FormsModule } from '@angular/forms';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import * as $ from 'jquery';
 import { LinechartComponent } from './linechart/linechart.component';
+import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
     declarations: [AppComponent, NavBarComponent, ProfileComponent, HomeComponent, PortfolioEditorComponent, ExternalApiComponent, LinechartComponent],
-    imports: [BrowserModule, AppRoutingModule, HttpClientModule, FontAwesomeModule, FormsModule],
-    providers: [{provide: LocationStrategy, useClass: HashLocationStrategy}],
+    imports: [BrowserModule, AppRoutingModule, HttpClientModule, FontAwesomeModule, FormsModule, ChartsModule],
+    providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
     bootstrap: [AppComponent],
 })
 export class AppModule {}

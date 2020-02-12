@@ -20,4 +20,8 @@ export class ApiService {
     test$(): Observable<any> {
         return this.http.get('/portfolio/api/test');
     }
+
+    loadChart(id: string): Observable<object> {
+        return this.http.get('/portfolio/api/chart?symbol=' + id);
+    }
 }

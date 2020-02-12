@@ -7,8 +7,10 @@ import { Portfolio } from './models/portfolio';
 export class YahooApi {
     quotesUrl: string;
     portfolio: Portfolio;
+    chartUrl: string;
     constructor() {
         this.quotesUrl = 'https://query2.finance.yahoo.com/v7/finance/quote';
+        this.chartUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/';
     }
 
     async get_portfolio(): Promise<Portfolio> {
@@ -106,6 +108,29 @@ export class YahooApi {
         }
 
         return this.portfolio;
+    }
+
+    async getChartData(symbol: string, range: string, interval: string): Promise<object> {
+        const searchParams = { symbol, range, interval, region:'NO',lang:'nb-NO', includePrePost: false, events: 'div|split|earn' };
+
+        const chart = await got(this.chartUrl, { searchParams })
+            .then(res => {
+                if (res) {
+                    return JSON.parse(res.body).chart.result;
+                }
+            })
+            .catch(err => {
+                if (err && err.response) {
+                    console.log(err.response.body);
+                    return err.response.body;
+                }
+            });
+
+        if (chart && chart.length > 0) {
+            return chart[0];
+        }
+
+        return {};
     }
 
     savePortfolio(portfolio: Portfolio) {

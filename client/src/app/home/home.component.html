@@ -54,10 +54,12 @@
                 <tbody>
                     <tr *ngFor="let position of portfolio.positions">
                         <td class="d-md-none">
-                            <span data-toggle="tooltip" data-placement="right" title="{{ position.name }}">{{ position.symbol }}</span>
+                            <span data-toggle="tooltip" data-placement="right" title="{{ position.name }}"><a [routerLink]="['/chart', position.symbol]">{{ position.symbol }}</a></span>
+                            <!-- <span data-toggle="tooltip" data-placement="right" title="{{ position.name }}">{{ position.symbol }}</span> -->
                         </td>
                         <td class="d-none d-md-table-cell">
-                            <span data-toggle="tooltip" data-placement="right" title="{{ position.symbol }}">{{ position.name }}</span>
+                            <span data-toggle="tooltip" data-placement="right" title="{{ position.symbol }}"><a [routerLink]="['/chart', position.symbol]">{{ position.name }}</a></span>
+                            <!-- <span data-toggle="tooltip" data-placement="right" title="{{ position.symbol }}">{{ position.name }}</span> -->
                         </td>
                         <td class="text-right d-none d-lg-table-cell">{{ position.shares | number: '0.0-0':'nb' }}</td>
                         <td class="text-right d-none d-lg-table-cell">{{ position.avg_price | currency: 'NOK':'':'0.2-2':'nb' }}</td>

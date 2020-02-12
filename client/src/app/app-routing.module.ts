@@ -8,6 +8,7 @@ import { PortfolioEditorComponent } from './portfolio-editor/portfolio-editor.co
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InterceptorService } from './interceptor.service';
 import { ExternalApiComponent } from './external-api/external-api.component';
+import { LinechartComponent } from './linechart/linechart.component';
 
 const routes: Routes = [
     {
@@ -18,6 +19,10 @@ const routes: Routes = [
         path: 'profile',
         component: ProfileComponent,
         canActivate: [AuthGuard],
+    },
+    {
+        path: 'chart/:id',
+        component: LinechartComponent,
     },
     {
         path: 'portfolio-editor',

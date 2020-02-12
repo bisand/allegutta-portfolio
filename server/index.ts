@@ -193,6 +193,13 @@ app.get('/portfolio/api/info', (req, res) => {
     });
 });
 
+app.get('/portfolio/api/chart', async (req, res) => {
+    const symbol = req.query.symbol;
+    const yahooApi = new YahooApi();
+    const data = await yahooApi.getChartData(symbol, '1d', '1m');
+    res.json(data);
+});
+
 app.get('/portfolio/api/portfolio', checkJwt, async (req, res) => {
     const result = await loadPortfolioFromDisk();
     res.json(result);

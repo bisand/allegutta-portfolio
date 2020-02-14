@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/api.service';
-import { IPortfolio } from '../home/home.component';
+import { IPortfolio } from "../home/IPortfolio";
 
 @Component({
     selector: 'app-external-api',
@@ -12,7 +12,7 @@ export class ExternalApiComponent implements OnInit {
     portfolio: IPortfolio;
 
     constructor(private api: ApiService) {
-        this.portfolio = { positions: [] };
+        this.portfolio = { positions: [] } as IPortfolio;
     }
 
     ngOnInit() {}

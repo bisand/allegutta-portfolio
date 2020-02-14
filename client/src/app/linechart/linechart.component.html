@@ -1,6 +1,41 @@
 <div class="container text-nowrap">
     <div class="card card-default mt-3">
-        <div class="card-header">{{ id }}</div>
+        <div class="card-header">Detaljer {{ id }}</div>
+        <div class="card-body">
+            <table class="table table-responsive">
+                <thead></thead>
+                <tbody>
+                    <tr>
+                        <th>Ticker</th>
+                        <td>{{ position?.symbol }}</td>
+                        <th>Navn</th>
+                        <td colspan="2">{{ position?.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Antall</th>
+                        <td class="text-right">{{ position?.shares | number: '0.0-0':'nb' }}</td>
+                        <th>GAV</th>
+                        <td class="text-right">{{ position?.avg_price | currency: 'NOK':'':'0.2-2':'nb' }} NOK</td>
+                        <th>Kostpris</th>
+                        <td class="text-right">{{ position?.avg_price | currency: 'NOK':'':'0.2-2':'nb' }} NOK</td>
+                    </tr>
+                    <tr>
+                        <th>Siste</th>
+                        <td class="text-right">{{ position?.last_price | currency: 'NOK':'':'0.2-2':'nb' }} NOK</td>
+                        <th>Endring i dag</th>
+                        <td class="text-right">{{ position?.change_today_percent | number: '0.2-2':'nb' }} %</td>
+                        <th>Verdi</th>
+                        <td class="text-right">{{ position?.current_value | currency: 'NOK':'':'0.2-2':'nb' }} NOK</td>
+                    </tr>
+                </tbody>
+                <tfoot></tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container text-nowrap">
+    <div class="card card-default mt-3">
+        <div class="card-header">Graf {{ id }}</div>
         <div class="card-body">
             <div class="chart-wrapper">
                 <canvas

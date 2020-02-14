@@ -1,23 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ChartDataSets, ChartOptions } from 'chart.js';
 import { Color, Label } from 'ng2-charts';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
 import { ApiService } from '../api.service';
-
-export interface IQuote {
-    volume: number[];
-    high: number[];
-    open: number[];
-    low: number[];
-    close: number[];
-}
-export interface IIndicator {
-    quote: IQuote[];
-}
-export interface IChartData {
-    timestamp: Label[];
-    indicators: IIndicator;
-}
+import { filter, map } from 'rxjs/operators';
+import { IPosition } from '../home/IPosition';
+import { DataService } from '../data.service';
+import { WebsocketService } from '../websocket.service';
+import { IChartData } from './IChartData';
+import { IIndicator } from './IIndicator';
+import { IQuote } from './IQuote';
+import { IPortfolio } from '../home/IPortfolio';
 
 @Component({
     selector: 'app-linechart',
@@ -81,12 +74,27 @@ export class LinechartComponent implements OnInit, OnDestroy {
     public lineChartLegend = true;
     public lineChartPlugins = [];
     public lineChartType = 'line';
+    public position: IPosition = {} as IPosition;
 
-    constructor(private route: ActivatedRoute, private api: ApiService) {}
+    constructor(private activatedRoute: ActivatedRoute, private dateService: DataService, private api: ApiService, private wss: WebsocketService) {
+        this.position = dateService.position;
+    }
 
     ngOnInit(): void {
-        this.sub = this.route.params.subscribe(params => {
+        this.sub = this.activatedRoute.params.subscribe(params => {
             this.id = params.id;
+            this.wss.init().subscribe(
+                message => {
+                    const portfolio = Object.assign({} as IPortfolio, message);
+                    if (portfolio && portfolio.positions) {
+                        this.position = portfolio.positions.filter(pos => {
+                            return pos.symbol === this.id;
+                        })[0];
+                    }
+                },
+                err => console.error(err),
+                () => console.warn('Completed!'),
+            );
             this.api.loadChart(this.id).subscribe(res => {
                 this.data = res as IChartData;
                 if (this.data && this.data.timestamp) {

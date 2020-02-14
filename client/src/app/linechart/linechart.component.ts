@@ -26,20 +26,17 @@ export interface IChartData {
 })
 export class LinechartComponent implements OnInit, OnDestroy {
     private sub: any;
-    private id: string;
     private data: IChartData = { indicators: { quote: [{} as IQuote] as IQuote[] } as IIndicator } as IChartData;
 
+    public id: string;
     public lineChartData: ChartDataSets[] = [{ data: [], label: '' }];
-
     public lineChartLabels: Label[] = [];
 
     public lineChartOptions: ChartOptions = {
         responsive: true,
         spanGaps: true,
         elements: {
-            point: {
-                radius: 0
-            }
+            point: { pointStyle: 'circle', radius: 1 },
         },
         scales: {
             xAxes: [
@@ -92,10 +89,12 @@ export class LinechartComponent implements OnInit, OnDestroy {
             this.id = params.id;
             this.api.loadChart(this.id).subscribe(res => {
                 this.data = res as IChartData;
-                this.data.timestamp.forEach(x => {
-                    const currentDate: Date = new Date(Number(x) * 1000);
-                    this.lineChartLabels.push(currentDate.toString());
-                });
+                if (this.data && this.data.timestamp) {
+                    this.data.timestamp.forEach(x => {
+                        const currentDate: Date = new Date(Number(x) * 1000);
+                        this.lineChartLabels.push(currentDate.toString());
+                    });
+                }
                 this.lineChartData = [{ data: this.data.indicators.quote[0].close, lineTension: 0, borderWidth: 1, steppedLine: 'before', label: this.id }];
             });
         });

@@ -21,7 +21,7 @@ export class ApiService {
         return this.http.get('/portfolio/api/test');
     }
 
-    loadChart(id: string): Observable<object> {
+    loadChart(id: string): Observable<any> {
         return this.http.get('/portfolio/api/chart?symbol=' + id);
     }
 }

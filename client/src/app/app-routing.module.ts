@@ -16,13 +16,13 @@ const routes: Routes = [
         component: HomeComponent,
     },
     {
+        path: 'chart/:id',
+        component: LinechartComponent,
+    },
+    {
         path: 'profile',
         component: ProfileComponent,
         canActivate: [AuthGuard],
-    },
-    {
-        path: 'chart/:id',
-        component: LinechartComponent,
     },
     {
         path: 'portfolio-editor',

@@ -3,7 +3,6 @@ import { ChartDataSets, ChartOptions } from 'chart.js';
 import { Color, Label } from 'ng2-charts';
 import { ActivatedRoute } from '@angular/router';
 import { ApiService } from '../api.service';
-import { isQuote } from '@angular/compiler';
 
 export interface IQuote {
     volume: number[];
@@ -37,6 +36,11 @@ export class LinechartComponent implements OnInit, OnDestroy {
     public lineChartOptions: ChartOptions = {
         responsive: true,
         spanGaps: true,
+        elements: {
+            point: {
+                radius: 0
+            }
+        },
         scales: {
             xAxes: [
                 {
@@ -81,12 +85,9 @@ export class LinechartComponent implements OnInit, OnDestroy {
     public lineChartPlugins = [];
     public lineChartType = 'line';
 
-    constructor(private route: ActivatedRoute, private api: ApiService) {
-        console.log('constructor');
-    }
+    constructor(private route: ActivatedRoute, private api: ApiService) {}
 
     ngOnInit(): void {
-        console.log('ngOnInit');
         this.sub = this.route.params.subscribe(params => {
             this.id = params.id;
             this.api.loadChart(this.id).subscribe(res => {
@@ -95,7 +96,7 @@ export class LinechartComponent implements OnInit, OnDestroy {
                     const currentDate: Date = new Date(Number(x) * 1000);
                     this.lineChartLabels.push(currentDate.toString());
                 });
-                this.lineChartData = [{ data: this.data.indicators.quote[0].close, lineTension: 0, steppedLine: 'before', label: this.id }];
+                this.lineChartData = [{ data: this.data.indicators.quote[0].close, lineTension: 0, borderWidth: 1, steppedLine: 'before', label: this.id }];
             });
         });
     }

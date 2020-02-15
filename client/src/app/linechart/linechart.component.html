@@ -7,25 +7,37 @@
                 <tbody>
                     <tr>
                         <th>Ticker</th>
-                        <td>{{ position?.symbol }}</td>
+                        <td class="text-right">{{ position?.symbol }}</td>
                         <th>Navn</th>
-                        <td colspan="2">{{ position?.name }}</td>
+                        <td class="text-right">{{ position?.name }}</td>
                     </tr>
                     <tr>
                         <th>Antall</th>
                         <td class="text-right">{{ position?.shares | number: '0.0-0':'nb' }}</td>
-                        <th>GAV</th>
-                        <td class="text-right">{{ position?.avg_price | currency: 'NOK':'':'0.2-2':'nb' }} NOK</td>
-                        <th>Kostpris</th>
-                        <td class="text-right">{{ position?.avg_price | currency: 'NOK':'':'0.2-2':'nb' }} NOK</td>
-                    </tr>
-                    <tr>
                         <th>Siste</th>
                         <td class="text-right">{{ position?.last_price | currency: 'NOK':'':'0.2-2':'nb' }} NOK</td>
+                    </tr>
+                    <tr>
+                        <th>GAV</th>
+                        <td class="text-right">{{ position?.avg_price | currency: 'NOK':'':'0.2-2':'nb' }} NOK</td>
                         <th>Endring i dag</th>
-                        <td class="text-right">{{ position?.change_today_percent | number: '0.2-2':'nb' }} %</td>
+                        <td class="text-right" [ngStyle]="{ color: position.change_today_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
+                            {{ position?.change_today_percent | number: '0.2-2':'nb' }} %
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Kostpris</th>
+                        <td class="text-right">{{ position?.cost_value | currency: 'NOK':'':'0.2-2':'nb' }} NOK</td>
                         <th>Verdi</th>
                         <td class="text-right">{{ position?.current_value | currency: 'NOK':'':'0.2-2':'nb' }} NOK</td>
+                    </tr>
+                    <tr>
+                        <th>Avkastning %</th>
+                        <td class="text-right" [ngStyle]="{ color: position.return_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
+                            {{ position?.return_percent | number: '0.2-2':'nb' }} %
+                        </td>
+                        <th>Avkastning</th>
+                        <td class="text-right" [ngStyle]="{ color: position.return >= 0 ? 'RoyalBlue' : 'Tomato' }">{{ position?.return | currency: 'NOK':'':'0.2-2':'nb' }} NOK</td>
                     </tr>
                 </tbody>
                 <tfoot></tfoot>

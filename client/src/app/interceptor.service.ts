@@ -8,7 +8,7 @@ import { mergeMap, catchError } from 'rxjs/operators';
     providedIn: 'root',
 })
 export class InterceptorService implements HttpInterceptor {
-    private whitelistedUrls: Array<string> = ['/portfolio/api/info', '/portfolio/api/chart'];
+    private whitelistedUrls: Array<string> = ['/portfolio/api/info', '/portfolio/api/chart', '/portfolio/version.json'];
     constructor(private auth: AuthService) {}
 
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

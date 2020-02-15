@@ -4,5 +4,5 @@ npm install
 npm run-script build
 cd client
 npm install
-ng build --prod=true
+ng build --prod=true && npm run post-build
 cd ..

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { VersionCheckService } from './version-check.service';
 
 @Component({
     selector: 'app-root',
@@ -6,5 +7,8 @@ import { Component, OnInit } from '@angular/core';
     styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
-    ngOnInit(): void {}
+    constructor(private versionCheckService: VersionCheckService) {}
+    ngOnInit(): void {
+        this.versionCheckService.initVersionCheck('/portfolio/version.json');
+    }
 }

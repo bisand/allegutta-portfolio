@@ -30,7 +30,7 @@ export class PortfolioEditorComponent implements OnInit {
     }
 
     loadPortfolio() {
-        this.api.loadPortfolio$().subscribe(res => {
+        this.api.loadPortfolio().subscribe(res => {
             this.portfolio = res;
             this.statusText = 'Porteføljen er lastet.';
             this.portfolioLoaded = true;
@@ -38,7 +38,7 @@ export class PortfolioEditorComponent implements OnInit {
     }
 
     savePortfolio() {
-        this.api.savePortfolio$(this.portfolio).subscribe(res => {
+        this.api.savePortfolio(this.portfolio).subscribe(res => {
             this.statusText = 'Porteføljen er lagret.';
         });
     }

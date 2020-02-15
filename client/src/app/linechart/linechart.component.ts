@@ -21,7 +21,7 @@ export class LinechartComponent implements OnInit, OnDestroy {
     private sub: any;
     private data: IChartData = { indicators: { quote: [{} as IQuote] as IQuote[] } as IIndicator } as IChartData;
 
-    public id: string;
+    public symbol: string;
     public lineChartData: ChartDataSets[] = [{ data: [], label: '' }];
     public lineChartLabels: Label[] = [];
 
@@ -82,20 +82,20 @@ export class LinechartComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.sub = this.activatedRoute.params.subscribe(params => {
-            this.id = params.id;
+            this.symbol = params.id;
             this.wss.init().subscribe(
                 message => {
                     const portfolio = Object.assign({} as IPortfolio, message);
                     if (portfolio && portfolio.positions) {
                         this.position = portfolio.positions.filter(pos => {
-                            return pos.symbol === this.id;
+                            return pos.symbol === this.symbol;
                         })[0];
                     }
                 },
                 err => console.error(err),
                 () => console.warn('Completed!'),
             );
-            this.api.loadChart(this.id).subscribe(res => {
+            this.api.loadChart(this.symbol).subscribe(res => {
                 this.data = res as IChartData;
                 if (this.data && this.data.timestamp) {
                     this.data.timestamp.forEach(x => {
@@ -103,7 +103,7 @@ export class LinechartComponent implements OnInit, OnDestroy {
                         this.lineChartLabels.push(currentDate.toString());
                     });
                 }
-                this.lineChartData = [{ data: this.data.indicators.quote[0].close, lineTension: 0, borderWidth: 1, steppedLine: 'before', label: this.id }];
+                this.lineChartData = [{ data: this.data.indicators.quote[0].close, lineTension: 0, borderWidth: 1, steppedLine: 'before', label: this.symbol }];
             });
         });
     }

@@ -18,10 +18,10 @@ export class ExternalApiComponent implements OnInit {
     ngOnInit() {}
 
     loadPortfolio() {
-        this.api.loadPortfolio$().subscribe(res => (this.portfolio = res));
+        this.api.loadPortfolio().subscribe(res => (this.portfolio = res));
     }
 
     testApi() {
-        this.api.test$().subscribe(res => (this.responseJson = res));
+        this.api.info().subscribe(res => (this.responseJson = res));
     }
 }

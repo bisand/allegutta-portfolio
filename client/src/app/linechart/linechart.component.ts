@@ -95,16 +95,20 @@ export class LinechartComponent implements OnInit, OnDestroy {
                 err => console.error(err),
                 () => console.warn('Completed!'),
             );
-            this.api.loadChart(this.symbol).subscribe(res => {
-                this.data = res as IChartData;
-                if (this.data && this.data.timestamp) {
-                    this.data.timestamp.forEach(x => {
-                        const currentDate: Date = new Date(Number(x) * 1000);
-                        this.lineChartLabels.push(currentDate.toString());
-                    });
-                }
-                this.lineChartData = [{ data: this.data.indicators.quote[0].close, lineTension: 0, borderWidth: 1, steppedLine: 'before', label: this.symbol }];
-            });
+            this.api.loadChart(this.symbol).subscribe(
+                res => {
+                    this.data = res as IChartData;
+                    if (this.data && this.data.timestamp) {
+                        this.data.timestamp.forEach(x => {
+                            const currentDate: Date = new Date(Number(x) * 1000);
+                            this.lineChartLabels.push(currentDate.toString());
+                        });
+                    }
+                    this.lineChartData = [{ data: this.data.indicators.quote[0].close, lineTension: 0, borderWidth: 1, steppedLine: 'before', label: this.symbol }];
+                },
+                err => console.error(err),
+                () => console.warn('Completed!'),
+            );
         });
     }
     ngOnDestroy(): void {

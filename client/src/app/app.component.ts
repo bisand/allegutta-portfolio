@@ -9,6 +9,6 @@ import { VersionCheckService } from './version-check.service';
 export class AppComponent implements OnInit {
     constructor(private versionCheckService: VersionCheckService) {}
     ngOnInit(): void {
-        this.versionCheckService.initVersionCheck('/portfolio/version.json');
+        this.versionCheckService.initVersionCheck('/portfolio/version.json', 1000 * 60 * 1);
     }
 }

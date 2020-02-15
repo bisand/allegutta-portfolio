@@ -15,7 +15,7 @@ export class VersionCheckService {
      * @param url - Url to call for version check.
      * @param frequency - in milliseconds, defaults to 30 minutes
      */
-    public initVersionCheck(url: string, frequency = 1000 * 10 * 1) {
+    public initVersionCheck(url: string, frequency = 1000 * 60 * 30) {
         setInterval(() => {
             this.checkVersion(url);
         }, frequency);

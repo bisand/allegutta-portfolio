@@ -1,4 +1,4 @@
-<div class="container text-nowrap">
+<div class="container-fluid text-nowrap">
     <div class="card card-default mt-3">
         <div class="card-header">Porteføljens verdi</div>
         <div class="card-body">
@@ -45,7 +45,7 @@
                         <th class="text-right d-none d-lg-table-cell" title="Gjennomsnittlig anskaffelsesverdi">GAV</th>
                         <th class="text-right d-none d-lg-table-cell">Kost</th>
                         <th class="text-right">I dag %</th>
-                        <th class="text-right">Siste</th>
+                        <th class="text-right d-none d-md-table-cell">Siste</th>
                         <th class="text-right d-none d-md-table-cell">Verdi</th>
                         <th class="text-right">Avkastning %</th>
                         <th class="text-right d-none d-xl-table-cell">Avkastning</th>
@@ -65,7 +65,7 @@
                         <td class="text-right" [ngStyle]="{ color: position.change_today_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
                             {{ position.change_today_percent | number: '0.2-2':'nb' }} %
                         </td>
-                        <td class="text-right">{{ position.last_price | currency: 'NOK':'':'0.2-2':'nb' }}</td>
+                        <td class="text-right d-none d-md-table-cell">{{ position.last_price | currency: 'NOK':'':'0.2-2':'nb' }}</td>
                         <td class="text-right d-none d-md-table-cell ">{{ position.current_value | currency: 'NOK':'':'0.0-0':'nb' }}</td>
                         <td class="text-right" [ngStyle]="{ color: position.return_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
                             {{ position.return_percent | number: '0.2-2':'nb' }} %
@@ -83,7 +83,7 @@
                         <th class="text-right d-none d-lg-table-cell"></th>
                         <th class="text-right"></th>
                         <th class="text-right d-none d-lg-table-cell"></th>
-                        <th class="text-right"></th>
+                        <th class="text-right d-none d-md-table-cell"></th>
                         <th class="text-right d-none d-md-table-cell"></th>
                         <th class="text-right" [ngStyle]="{ color: portfolio.change_total_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
                             {{ portfolio.change_total_percent | number: '0.2-2':'nb' }} %

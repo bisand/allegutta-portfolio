@@ -1,4 +1,4 @@
-<div class="container-fluid text-nowrap">
+<div class="container text-nowrap">
     <div class="card card-default mt-3">
         <div class="card-header">Porteføljens verdi</div>
         <div class="card-body">
@@ -39,27 +39,27 @@
             <table class="table table-striped table-hover table-responsive">
                 <thead>
                     <tr>
-                        <th class="d-md-none">Ticker</th>
-                        <th class="d-none d-md-table-cell">Navn</th>
-                        <th class="text-right d-none d-lg-table-cell">Antall</th>
+                        <th class="d-lg-none">Ticker</th>
+                        <th class="d-none d-lg-table-cell">Navn</th>
+                        <th class="text-right d-none d-md-table-cell">Antall</th>
                         <th class="text-right d-none d-lg-table-cell" title="Gjennomsnittlig anskaffelsesverdi">GAV</th>
                         <th class="text-right d-none d-lg-table-cell">Kost</th>
                         <th class="text-right">I dag %</th>
                         <th class="text-right d-none d-md-table-cell">Siste</th>
                         <th class="text-right d-none d-md-table-cell">Verdi</th>
                         <th class="text-right">Avkastning %</th>
-                        <th class="text-right d-none d-xl-table-cell">Avkastning</th>
+                        <th class="text-right d-none d-md-table-cell">Avkastning</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let position of portfolio.positions" (click)="setData(position)" [routerLink]="['/chart', position.symbol]" [state]="position" style="cursor: default;">
-                        <td class="d-md-none">
+                        <td class="d-lg-none">
                             <span data-toggle="tooltip" data-placement="right" title="{{ position.name }}">{{ position.symbol }}</span>
                         </td>
-                        <td class="d-none d-md-table-cell">
+                        <td class="d-none d-lg-table-cell">
                             <span data-toggle="tooltip" data-placement="right" title="{{ position.symbol }}">{{ position.name }}</span>
                         </td>
-                        <td class="text-right d-none d-lg-table-cell">{{ position.shares | number: '0.0-0':'nb' }}</td>
+                        <td class="text-right d-none d-md-table-cell">{{ position.shares | number: '0.0-0':'nb' }}</td>
                         <td class="text-right d-none d-lg-table-cell">{{ position.avg_price | currency: 'NOK':'':'0.2-2':'nb' }}</td>
                         <td class="text-right d-none d-lg-table-cell ">{{ position.cost_value | currency: 'NOK':'':'0.0-0':'nb' }}</td>
                         <td class="text-right" [ngStyle]="{ color: position.change_today_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
@@ -68,18 +68,18 @@
                         <td class="text-right d-none d-md-table-cell">{{ position.last_price | currency: 'NOK':'':'0.2-2':'nb' }}</td>
                         <td class="text-right d-none d-md-table-cell ">{{ position.current_value | currency: 'NOK':'':'0.0-0':'nb' }}</td>
                         <td class="text-right" [ngStyle]="{ color: position.return_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
-                            {{ position.return_percent | number: '0.2-2':'nb' }} %
+                            {{ position.return_percent | number: '0.2-2':'nb' }} % 
                         </td>
-                        <td class="text-right d-none d-xl-table-cell" [ngStyle]="{ color: position.return >= 0 ? 'RoyalBlue' : 'Tomato' }">
+                        <td class="text-right d-none d-md-table-cell" [ngStyle]="{ color: position.return >= 0 ? 'RoyalBlue' : 'Tomato' }">
                             {{ position.return | currency: 'NOK':'':'0.0-0':'nb' }}
                         </td>
                     </tr>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th class="d-md-none font-weight-bold">Total</th>
-                        <th class="d-none d-md-table-cell font-weight-bold">Total</th>
-                        <td class="text-right d-none d-lg-table-cell"></td>
+                        <th class="d-lg-none font-weight-bold">Total</th>
+                        <th class="d-none d-lg-table-cell font-weight-bold">Total</th>
+                        <td class="text-right d-none d-md-table-cell"></td>
                         <th class="text-right d-none d-lg-table-cell"></th>
                         <th class="text-right"></th>
                         <th class="text-right d-none d-lg-table-cell"></th>
@@ -88,7 +88,7 @@
                         <th class="text-right" [ngStyle]="{ color: portfolio.change_total_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
                             {{ portfolio.change_total_percent | number: '0.2-2':'nb' }} %
                         </th>
-                        <th class="text-right d-none d-xl-table-cell" [ngStyle]="{ color: portfolio.change_total_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
+                        <th class="text-right d-none d-md-table-cell" [ngStyle]="{ color: portfolio.change_total_percent >= 0 ? 'RoyalBlue' : 'Tomato' }">
                             {{ portfolio.change_total | currency: 'NOK':'':'0.0-0':'nb' }}
                         </th>
                     </tr>

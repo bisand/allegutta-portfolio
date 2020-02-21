@@ -17,10 +17,10 @@
     "express-jwt": "^5.3.1",
     "express-jwt-authz": "^2.3.1",
     "express-ws": "^4.0.0",
-    "got": "^10.4.0",
-    "jwks-rsa": "^1.6.2",
+    "got": "^10.6.0",
+    "jwks-rsa": "^1.7.0",
     "node-rsa": "^1.0.7",
-    "query-string": "^6.10.1",
+    "query-string": "^6.11.0",
     "restler": "^3.4.0",
     "sqlite3": "^4.1.1",
     "sqlite3po": "^1.6.1",
@@ -32,6 +32,6 @@
     "@types/express-ws": "^3.0.0",
     "@types/sqlite3": "^3.1.6",
     "tslint": "^6.0.0",
-    "typescript": "^3.7.5"
+    "typescript": "^3.8.2"
   }
 }

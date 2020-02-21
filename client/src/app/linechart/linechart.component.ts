@@ -29,7 +29,7 @@ export class LinechartComponent implements OnInit, OnDestroy {
         responsive: true,
         spanGaps: true,
         elements: {
-            point: { pointStyle: 'circle', radius: 1 },
+            point: { pointStyle: 'circle', radius: 0 },
         },
         scales: {
             xAxes: [
@@ -104,6 +104,23 @@ export class LinechartComponent implements OnInit, OnDestroy {
                             this.lineChartLabels.push(currentDate.toString());
                         });
                     }
+                    if (this.position.change_today > 0) {
+                        this.lineChartColors[0] = {
+                            borderColor: 'blue',
+                            backgroundColor: 'rgba(20,20,200,0.28)',
+                        } as Color;
+                    } else if (this.position.change_today < 0) {
+                        this.lineChartColors[0] = {
+                            borderColor: 'red',
+                            backgroundColor: 'rgba(200,20,20,0.28)',
+                        } as Color;
+                    } else {
+                        this.lineChartColors[0] = {
+                            borderColor: 'black',
+                            backgroundColor: 'rgba(200,200,200,0.28)',
+                        } as Color;
+                    }
+
                     this.lineChartData = [{ data: this.data.indicators.quote[0].close, lineTension: 0, borderWidth: 1, steppedLine: 'before', label: this.symbol }];
                 },
                 err => console.error(err),

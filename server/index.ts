@@ -6,7 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import os from 'os';
 import jwt from 'express-jwt';
-import jwtAuthz from 'express-jwt-authz';
+// import jwtAuthz from 'express-jwt-authz';
 import jwksRsa from 'jwks-rsa';
 import { YahooApi } from './yahoo';
 import { DataRepository } from './repository';
@@ -184,8 +184,8 @@ app.ws('/portfolio/ws', (ws: WebSocket, req: any) => {
     console.log('WebSocket connected. ' + connectedClients + ' active connections.');
 });
 
-const scopeRead = jwtAuthz(['read:portfolio']);
-const scopeFull = jwtAuthz(['read:portfolio', 'write:portfolio']);
+// const scopeRead = jwtAuthz(['read:portfolio']);
+// const scopeFull = jwtAuthz(['read:portfolio', 'write:portfolio']);
 
 app.get('/portfolio/api/info', (req, res) => {
     res.json({

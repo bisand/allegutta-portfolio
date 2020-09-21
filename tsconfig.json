@@ -1,13 +1,29 @@
 {
     "compilerOptions": {
+        "lib": [
+            "es2019",
+            "es2020.promise",
+            "es2020.bigint",
+            "es2020.string"
+        ],
         "module": "commonjs",
+        "target": "es2019",
+        "strict": false,
         "esModuleInterop": true,
-        "target": "ES2019",
-        "moduleResolution": "node",
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "moduleResolution": "Node",
         "sourceMap": true,
         "outDir": "server_dist"
     },
-    "include": ["server/**/*"],
-    "exclude": ["node_modules", "**/*.spec.ts"],
-    "lib": ["ES2019"]
+    "include": [
+        "server/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ],
+    "lib": [
+        "ES2020"
+    ]
 }

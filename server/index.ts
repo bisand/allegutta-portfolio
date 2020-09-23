@@ -165,7 +165,7 @@ app.use((req, res, next) => {
 });
 
 // Root path redirects to portfolio.
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
     res.redirect('/portfolio');
 });
 
@@ -195,13 +195,13 @@ app.ws('/portfolio/ws', (ws: WebSocket, req: any) => {
 // const scopeRead = jwtAuthz(['read:portfolio']);
 // const scopeFull = jwtAuthz(['read:portfolio', 'write:portfolio']);
 
-app.get('/portfolio/api/info', (req, res) => {
+app.get('/portfolio/api/info', (req: Request, res: Response) => {
     res.json({
         connectedClients,
     });
 });
 
-app.get('/portfolio/api/chart', async (req, res) => {
+app.get('/portfolio/api/chart', async (req: Request, res: Response) => {
     const symbol = req.query.symbol;
     const yahooApi = new YahooApi();
     const data = await yahooApi.getChartData(symbol, '1d', '1m');

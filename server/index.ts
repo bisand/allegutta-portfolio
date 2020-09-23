@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, RequestHandler, Response } from "express";
 import expressWs from 'express-ws';
 import bodyParser from 'body-parser';
 import WebSocket from 'ws';
@@ -32,24 +32,23 @@ let portfolio: Portfolio;
 // Authentication middleware. When used, the
 // Access Token must exist and be verified against
 // the Auth0 JSON Web Key Set
-const checkJwt = () => {
-    return jwt({
-        // Dynamically provide a signing key
-        // based on the kid in the header and
-        // the signing keys provided by the JWKS endpoint.
-        secret: jwksRsa.expressJwtSecret({
-            cache: true,
-            rateLimit: true,
-            jwksRequestsPerMinute: 5,
-            jwksUri: `https://bisand.auth0.com/.well-known/jwks.json`,
-        }),
+const checkJwt = jwt({
+    // Dynamically provide a signing key
+    // based on the kid in the header and
+    // the signing keys provided by the JWKS endpoint.
+    secret: jwksRsa.expressJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `https://bisand.auth0.com/.well-known/jwks.json`,
+    }),
 
-        // Validate the audience and the issuer.
-        audience: 'https://allegutta.net/portfolio/api',
-        issuer: 'https://bisand.auth0.com/',
-        algorithms: ['RS256'],
-    });
-};
+    // Validate the audience and the issuer.
+    audience: 'https://allegutta.net/portfolio/api',
+    issuer: 'https://bisand.auth0.com/',
+    algorithms: ['RS256'],
+});
+
 
 function readConfigFile() {
     const configPath = path.resolve('./config/server.config.json');
@@ -157,6 +156,13 @@ if (!fs.existsSync(dirName)) {
 }
 app.use('/portfolio', express.static(dirName, options));
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+    // allow calling from different domains
+    res.set("Access-Control-Allow-Origin", "*");
+    // allow authorization header
+    res.set("Access-Control-Allow-Headers", "authorization");
+    next();
+});
 
 // Root path redirects to portfolio.
 app.get('/', (req, res) => {
@@ -202,12 +208,12 @@ app.get('/portfolio/api/chart', async (req, res) => {
     res.json(data);
 });
 
-app.get('/portfolio/api/portfolio', checkJwt, async (req, res) => {
+app.get('/portfolio/api/portfolio', checkJwt, async (req: Request, res: Response) => {
     const result = await loadPortfolioFromDisk();
     res.json(result);
 });
 
-app.post('/portfolio/api/portfolio', checkJwt, (req, res) => {
+app.post('/portfolio/api/portfolio', checkJwt, (req: Request, res: Response) => {
     console.log(req.body);
     portfolio = req.body;
     const yahooApi = new YahooApi();

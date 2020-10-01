@@ -14,12 +14,11 @@ cache:
      - ./client-dist
      - ./server-dist
 
-stages:
-  - name: build
-    script:
-      - ./build-all.sh
-  - name: deploy
-    # require the branch name to be master (note for PRs this is the base branch name)
-    if: branch = master
-    script:
-      - ./docker-deploy.sh
+jobs:
+  include:
+    - stage: build
+      script: ./build-all.sh
+    - stage: deploy
+      # require the branch name to be master (note for PRs this is the base branch name)
+      if: branch = master
+      script: ./docker-deploy.sh

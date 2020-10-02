@@ -19,10 +19,10 @@ jobs:
     - stage: build
       script: "./build-all.sh"
     - stage: deploy
-      script: "./docker-deploy.sh"
+      script: "./build-all-deploy.sh"
 
 stages:
   - name: build
+    if: (NOT ((branch = master) AND (NOT (type IN (pull_request)))))
   - name: deploy
-    # require the branch name to be master (note for PRs this is the base branch name)
     if: (branch = master) AND (NOT (type IN (pull_request)))

@@ -5,13 +5,30 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Debug Client",
+            "request": "launch",
+            "type": "firefox",
+            "url": "http://localhost:4200/portfolio",
+            "webRoot": "${workspaceFolder}",
+            "pathMappings": [
+                {
+                    "url": "webpack:///src",
+                    "path": "${workspaceFolder}/client/src"
+                }
+            ]
+        },
+        {
             "type": "node",
             "request": "launch",
             "name": "Debug Server",
-            "skipFiles": ["<node_internals>/**"],
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
             "program": "${workspaceFolder}/server/index.ts",
             "preLaunchTask": "tsc: build - tsconfig.json",
-            "outFiles": ["${workspaceFolder}/server_dist/**/*.js"]
+            "outFiles": [
+                "${workspaceFolder}/server_dist/**/*.js"
+            ]
         }
     ]
 }

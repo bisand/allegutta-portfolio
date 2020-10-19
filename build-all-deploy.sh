@@ -6,6 +6,6 @@ cd client
 npm install
 ng build --prod && npm run post-build
 cd ..
-sudo echo "$DOCKER_PASSWORD" | sudo docker login -u "$DOCKER_USERNAME" --password-stdin
+echo "$DOCKER_PASSWORD" | sudo docker login -u "$DOCKER_USERNAME" --password-stdin
 sudo docker build -t bisand/allegutta-portfolio .
 sudo docker push bisand/allegutta-portfolio

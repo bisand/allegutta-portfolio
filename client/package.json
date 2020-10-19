@@ -30,9 +30,9 @@
     "highlight.js": "^10.2.1",
     "ng2-charts": "^2.4.2",
     "ngx-highlightjs": "^4.1.2",
-    "rxjs": "^6.6.3",
-    "rxjs-compat": "^6.6.3",
-    "tslib": "^2.0.3",
+    "rxjs": "~6.5.4",
+    "rxjs-compat": "~6.5.4",
+    "tslib": "^1.11.0",
     "zone.js": "~0.10.3"
   },
   "devDependencies": {

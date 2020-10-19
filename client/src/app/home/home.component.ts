@@ -43,17 +43,18 @@ export class NgbdSortableHeader {
     styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-    private _sortEvent: SortEvent = {column: 'name', direction: 'asc'};
+    private _sortEvent: SortEvent = { column: 'name', direction: 'asc' };
     public _portfolio: IPortfolio;
 
     public portfolio: IPortfolio;
 
     constructor(private wss: WebsocketService, private dataService: DataService) {
+        this._portfolio = { positions: [] } as IPortfolio;
         this.portfolio = { positions: [] } as IPortfolio;
         this.wss.init().subscribe(
             message => {
-                this._portfolio = Object.assign({} as IPortfolio, message);
-                this.portfolio = Object.assign({} as IPortfolio, message);
+                this._portfolio = Object.assign({ positions: [] } as IPortfolio, message);
+                this.portfolio = Object.assign({ positions: [] } as IPortfolio, message);
                 this.onSort(this._sortEvent)
             },
             err => console.error(err),
@@ -76,7 +77,7 @@ export class HomeComponent implements OnInit {
         this._sortEvent.column = column;
         this._sortEvent.direction = direction;
         // resetting other headers
-        this.headers.forEach(header => {
+        this.headers?.forEach(header => {
             if (header.sortable !== column) {
                 header.direction = '';
             }

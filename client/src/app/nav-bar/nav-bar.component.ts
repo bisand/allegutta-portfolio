@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { faUser, faPowerOff, faEdit } from '@fortawesome/free-solid-svg-icons';
-import { AuthService } from '../auth.service';
+import { AuthService } from '@auth0/auth0-angular';
 import { Router } from '@angular/router';
 
 @Component({

@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AppComponent } from './app.component';
 import { ProfileComponent } from './profile/profile.component';
-import { AuthGuard } from './auth.guard';
 import { HomeComponent } from './home/home.component';
 import { PortfolioEditorComponent } from './portfolio-editor/portfolio-editor.component';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InterceptorService } from './interceptor.service';
 import { ExternalApiComponent } from './external-api/external-api.component';
 import { LinechartComponent } from './linechart/linechart.component';
+import { AuthService } from '@auth0/auth0-angular';
 
 const routes: Routes = [
     {
@@ -22,17 +22,17 @@ const routes: Routes = [
     {
         path: 'profile',
         component: ProfileComponent,
-        canActivate: [AuthGuard],
+        canActivate: [AuthService],
     },
     {
         path: 'portfolio-editor',
         component: PortfolioEditorComponent,
-        canActivate: [AuthGuard],
+        canActivate: [AuthService],
     },
     {
         path: 'external-api',
         component: ExternalApiComponent,
-        canActivate: [AuthGuard],
+        canActivate: [AuthService],
     },
 ];
 

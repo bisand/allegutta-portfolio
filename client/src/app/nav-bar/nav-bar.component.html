@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">Aksjespareklubben AlleGutta</a>
+    <a class="navbar-brand" href="">Aksjespareklubben AlleGutta</a>
     <button
         class="navbar-toggler"
         type="button"
@@ -14,18 +14,18 @@
     <div class="collapse navbar-collapse" id="navbarNavDropdown">
         <ul class="navbar-nav w-100">
             <li class="nav-item active">
-                <a class="nav-link" href="#">Portefølje <span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="">Portefølje <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item active">
                 <a class="nav-link" href="https://github.com/bisand/allegutta-portfolio" target="_blank">GitHub</a>
             </li>
-            <li class="nav-item dropdown ml-auto" *ngIf="auth.loggedIn === false">
-                <a class="nav-link" href="#" (click)="auth.login()"><span class="glyphicon glyphicon-log-in"></span> Login</a>
+            <li class="nav-item dropdown ml-auto" *ngIf="(auth.isAuthenticated$ | async) == false">
+                <a class="nav-link" href="" (click)="loginWithRedirect()"><span class="glyphicon glyphicon-log-in"></span> Login</a>
             </li>
-            <li class="nav-item dropdown ml-auto" *ngIf="auth.userProfile$ | async as profile">
+            <li class="nav-item dropdown ml-auto" *ngIf="(auth.user$ | async) as profile">
                 <a
                     class="nav-link dropdown-toggle"
-                    href="#"
+                    href=""
                     id="navbarDropdownMenuLink"
                     data-toggle="dropdown"
                     aria-haspopup="true"

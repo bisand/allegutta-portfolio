@@ -8,7 +8,7 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { InterceptorService } from './interceptor.service';
 import { ExternalApiComponent } from './external-api/external-api.component';
 import { LinechartComponent } from './linechart/linechart.component';
-import { AuthService } from '@auth0/auth0-angular';
+import { AuthGuard } from '@auth0/auth0-angular';
 
 const routes: Routes = [
     {
@@ -22,22 +22,22 @@ const routes: Routes = [
     {
         path: 'profile',
         component: ProfileComponent,
-        canActivate: [AuthService],
+        canActivate: [AuthGuard],
     },
     {
         path: 'portfolio-editor',
         component: PortfolioEditorComponent,
-        canActivate: [AuthService],
+        canActivate: [AuthGuard],
     },
     {
         path: 'external-api',
         component: ExternalApiComponent,
-        canActivate: [AuthService],
+        canActivate: [AuthGuard],
     },
 ];
 
 @NgModule({
-    imports: [RouterModule.forRoot(routes, { useHash: true })],
+    imports: [RouterModule.forRoot(routes, {  })],
     exports: [RouterModule],
     providers: [
         {

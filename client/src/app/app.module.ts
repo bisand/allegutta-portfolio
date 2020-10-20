@@ -15,7 +15,6 @@ import { PortfolioEditorComponent } from './portfolio-editor/portfolio-editor.co
 import { HttpClientModule } from '@angular/common/http';
 import { ExternalApiComponent } from './external-api/external-api.component';
 import { FormsModule } from '@angular/forms';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import * as $ from 'jquery';
 import { LinechartComponent } from './linechart/linechart.component';
 import { ChartsModule } from 'ng2-charts';
@@ -31,7 +30,7 @@ import { ChartsModule } from 'ng2-charts';
             audience: 'https://allegutta.net/portfolio/api',
         }),
     ],
-    providers: [{ provide: LocationStrategy, useClass: HashLocationStrategy }],
+    providers: [],
     bootstrap: [AppComponent],
 })
 export class AppModule { }

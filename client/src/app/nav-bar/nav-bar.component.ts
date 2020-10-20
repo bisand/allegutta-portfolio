@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { faUser, faPowerOff, faEdit } from '@fortawesome/free-solid-svg-icons';
-import { AuthService } from '@auth0/auth0-angular';
 import { Router } from '@angular/router';
+import { AuthService } from '@auth0/auth0-angular';
 
 @Component({
     selector: 'app-nav-bar',
@@ -14,7 +14,12 @@ export class NavBarComponent implements OnInit {
     faEdit = faEdit;
     faPowerOff = faPowerOff;
 
-    constructor(public auth: AuthService) {}
+    constructor(public auth: AuthService) {
+    }
 
-    ngOnInit() {}
+    loginWithRedirect(): void {
+        this.auth.loginWithRedirect();
+    }
+
+    ngOnInit() { }
 }

@@ -20,7 +20,7 @@
                 <a class="nav-link" href="https://github.com/bisand/allegutta-portfolio" target="_blank">GitHub</a>
             </li>
             <li class="nav-item dropdown ml-auto" *ngIf="(auth.isAuthenticated$ | async) == false">
-                <a class="nav-link" href="" (click)="loginWithRedirect()"><span class="glyphicon glyphicon-log-in"></span> Login</a>
+                <button class="nav-link" (click)="loginWithRedirect()"><span class="glyphicon glyphicon-log-in"></span> Login</button>
             </li>
             <li class="nav-item dropdown ml-auto" *ngIf="(auth.user$ | async) as profile">
                 <a

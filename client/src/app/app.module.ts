@@ -18,17 +18,19 @@ import { FormsModule } from '@angular/forms';
 import * as $ from 'jquery';
 import { LinechartComponent } from './linechart/linechart.component';
 import { ChartsModule } from 'ng2-charts';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
     declarations: [AppComponent, NavBarComponent, ProfileComponent, HomeComponent, PortfolioEditorComponent, ExternalApiComponent, LinechartComponent, HomeComponent, NgbdSortableHeader],
     imports: [BrowserModule, AppRoutingModule, HttpClientModule, FontAwesomeModule, FormsModule, ChartsModule, BrowserModule, CommonModule,
-        // 👇 add and initialize AuthModule
+
         AuthModule.forRoot({
             domain: 'bisand.auth0.com',
             clientId: 'GkHeGKUC45oQb2H2s2LdYF8sTycapRe0',
             redirectUri: `${window.location.origin + '/portfolio/'}`,
             audience: 'https://allegutta.net/portfolio/api',
         }),
+        NgbModule,
     ],
     providers: [],
     bootstrap: [AppComponent],

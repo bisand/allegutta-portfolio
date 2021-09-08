@@ -202,9 +202,9 @@ app.get('/portfolio/api/info', (req: Request, res: Response) => {
 });
 
 app.get('/portfolio/api/chart', async (req: Request, res: Response) => {
-    const symbol = req.query.symbol;
+    const symbol = req.query.symbol as any;
     const yahooApi = new YahooApi();
-    const data = await yahooApi.getChartData(symbol, '1d', '1m');
+    const data = await yahooApi.getChartData(symbol.toString(), '1d', '1m');
     res.json(data);
 });
 

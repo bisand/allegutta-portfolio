@@ -21,5 +21,10 @@ export class NavBarComponent implements OnInit {
         this.auth.loginWithRedirect();
     }
 
+    logoutWithRedirect(): void {
+        const url = this.auth.buildLogoutUrl({ returnTo: '/portfolio/' });
+        this.auth.logout({ returnTo: `${window.location.origin + '/portfolio/'}` });
+    }
+
     ngOnInit() { }
 }

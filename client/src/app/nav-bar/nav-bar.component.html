@@ -16,7 +16,7 @@
                 <a class="nav-link" href="#" (click)="loginWithRedirect()"><span
                         class="glyphicon glyphicon-log-in"></span> Login</a>
             </li>
-            <li ngbDropdown [ngbNavItem]="4" *ngIf="(auth.user$ | async) as profile" class="nav-item ml-auto">
+            <li ngbDropdown [ngbNavItem]="4" *ngIf="(auth.user$ | async) as profile" placement="bottom-right" display="dynamic" class="nav-item ml-auto">
                 <a href (click)="false" class="nav-link" ngbDropdownToggle>
                     <img [src]="profile.picture" alt="Profile picture" class="nav-user-profile rounded-circle"
                         style="width: 16px" /> {{ profile.name }}
@@ -37,31 +37,8 @@
                     <button ngbDropdownItem (click)="auth.logout()" id="qsLogoutBtn">
                         <fa-icon [icon]="faPowerOff" class="mr-3"></fa-icon> Log out
                     </button>
-                    <button ngbDropdownItem>Separated link</button>
                 </div>
             </li>
-            <!-- <li [ngbNavItem]="5" *ngIf="(auth.user$ | async) as profile" class="ml-auto">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
-                    <img [src]="profile.picture" alt="Profile picture" class="nav-user-profile rounded-circle"
-                        style="width: 16px" /> {{ profile.name }}
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-                    <div class="dropdown-header" *ngIf="profile">
-                        <img [src]="profile.picture" alt="Profile picture" class="nav-user-profile rounded-circle"
-                            style="width: 40px" /> {{ profile.name }}
-                    </div>
-                    <button routerLink="/profile/" class="btn btn-link dropdown-item" *ngIf="profile">
-                        <fa-icon [icon]="faUser" class="mr-3"></fa-icon>Profile
-                    </button>
-                    <button routerLink="/portfolio-editor/" class="btn btn-link dropdown-item" *ngIf="profile">
-                        <fa-icon [icon]="faEdit" class="mr-3"></fa-icon>Redigér Portefølje
-                    </button>
-                    <button (click)="auth.logout()" class="btn btn-link dropdown-item" id="qsLogoutBtn">
-                        <fa-icon [icon]="faPowerOff" class="mr-3"></fa-icon> Log out
-                    </button>
-                </div>
-            </li> -->
         </ul>
     </div>
 </nav>

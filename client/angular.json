@@ -58,9 +58,17 @@
                                     "maximumError": "10kb"
                                 }
                             ]
+                        },
+                        "development": {
+                            "buildOptimizer": false,
+                            "optimization": false,
+                            "vendorChunk": true,
+                            "extractLicenses": false,
+                            "sourceMap": true,
+                            "namedChunks": true
                         }
                     },
-                    "defaultConfiguration": "development"
+                    "defaultConfiguration": "production"
                 },
                 "serve": {
                     "builder": "@angular-devkit/build-angular:dev-server",
@@ -70,6 +78,9 @@
                         "proxyConfig": "proxy.conf.json"
                     },
                     "configurations": {
+                        "development": {
+                            "browserTarget": "client:build:development"
+                        },
                         "production": {
                             "browserTarget": "client:build:production"
                         }

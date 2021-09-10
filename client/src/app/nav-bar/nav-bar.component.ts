@@ -9,10 +9,10 @@ import { AuthService } from '@auth0/auth0-angular';
     styleUrls: ['./nav-bar.component.css'],
 })
 export class NavBarComponent implements OnInit {
-    isCollapsed = true;
-    faUser = faUser;
-    faEdit = faEdit;
-    faPowerOff = faPowerOff;
+    public faUser = faUser;
+    public faEdit = faEdit;
+    public faPowerOff = faPowerOff;
+    public isMenuCollapsed = true;
 
     constructor(public auth: AuthService) {
     }
@@ -22,7 +22,8 @@ export class NavBarComponent implements OnInit {
     }
 
     logoutWithRedirect(): void {
-        const url = this.auth.buildLogoutUrl({ returnTo: '/portfolio/' });
+        // const url = this.auth.buildLogoutUrl({ returnTo: `${window.location.origin + '/portfolio/'}` }).subscribe(url => {
+        // });
         this.auth.logout({ returnTo: `${window.location.origin + '/portfolio/'}` });
     }
 

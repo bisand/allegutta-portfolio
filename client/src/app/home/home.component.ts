@@ -67,7 +67,6 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit() {
-        $('[data-toggle="tooltip"]').tooltip();
     }
 
     @ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;

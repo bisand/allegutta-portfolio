@@ -8,9 +8,7 @@ import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class ModalsPortfolioSave {
 
-  constructor(public modal: NgbActiveModal) { }
-
-  ngOnInit(): void {
+  constructor(public modal: NgbActiveModal) {
   }
 
 }

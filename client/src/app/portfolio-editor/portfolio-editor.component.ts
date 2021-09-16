@@ -4,6 +4,7 @@ import { IPosition } from "../home/IPosition";
 import { ApiService } from '../api.service';
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { ModalsPortfolioSave } from '../modals/modals.portfolio.save';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'app-portfolio-editor',
@@ -12,15 +13,16 @@ import { ModalsPortfolioSave } from '../modals/modals.portfolio.save';
 })
 export class PortfolioEditorComponent implements OnInit {
     portfolio: IPortfolio;
-    statusText: string;
+    statusText: String;
     newPosition: IPosition;
     portfolioLoaded: boolean;
     positionToDelete: IPosition;
 
     faTrash = faTrash;
     faPlus = faPlus;
+    private _modalRef: NgbModalRef;
 
-    constructor(private api: ApiService) {
+    constructor(private api: ApiService, private _modalService: NgbModal) {
         this.portfolio = { positions: [] } as IPortfolio;
         this.newPosition = {} as IPosition;
         this.portfolioLoaded = false;
@@ -39,8 +41,17 @@ export class PortfolioEditorComponent implements OnInit {
     }
 
     savePortfolio() {
-        this.api.savePortfolio(this.portfolio).subscribe(res => {
-            this.statusText = 'Porteføljen er lagret.';
+        const parent = this;
+        this._modalRef = this._modalService.open(ModalsPortfolioSave);
+        this._modalRef.result.then((result) => {
+            console.log(result);
+            if (result === 'OK click') {
+                parent.api.savePortfolio(parent.portfolio).subscribe(res => {
+                    parent.statusText = 'Porteføljen er lagret.';
+                });
+            }
+        }, (reason) => {
+            console.error(reason);
         });
     }
 

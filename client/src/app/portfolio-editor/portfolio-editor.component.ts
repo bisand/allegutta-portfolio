@@ -41,17 +41,23 @@ export class PortfolioEditorComponent implements OnInit {
     }
 
     savePortfolio() {
-        const parent = this;
+        const obj = this;
         this._modalRef = this._modalService.open(ModalsPortfolioSave);
-        this._modalRef.result.then((result) => {
-            console.log(result);
-            if (result === 'OK click') {
-                parent.api.savePortfolio(parent.portfolio).subscribe(res => {
-                    parent.statusText = 'Porteføljen er lagret.';
+        this._modalRef.closed.subscribe(modalResult => {
+            if (modalResult === 'OK click') {
+                obj.api.savePortfolio(obj.portfolio).subscribe(res => {
+                    console.log(res);
+                    obj.statusText = 'Porteføljen er lagret.';
+                }, err => {
+                    console.error(err);
+                }, () => { 
+                    console.log('Done!');
                 });
             }
+        });
+        this._modalRef.result.then((result) => {
+            console.log(result);
         }, (reason) => {
-            console.error(reason);
         });
     }
 

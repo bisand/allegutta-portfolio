@@ -3,6 +3,7 @@ import { IPortfolio } from "../home/IPortfolio";
 import { IPosition } from "../home/IPosition";
 import { ApiService } from '../api.service';
 import { faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
+import { ModalsPortfolioSave } from '../modals/modals.portfolio.save';
 
 @Component({
     selector: 'app-portfolio-editor',

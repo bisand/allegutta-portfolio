@@ -1,0 +1,15 @@
+<div class="modal-header">
+    <h5 class="modal-title" id="saveModalLabel">Bekreft sletting av posisjon</h5>
+    <button type="button" class="close" (click)="modal.dismiss('corss click')" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    Er du sikker på at du vil slette posisjonen {{ positionToDelete.symbol }}?
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss('cancel click')">Lukk</button>
+    <button type="button" class="btn btn-danger" (click)="modal.close('OK click')">
+        Slett {{ positionToDelete.symbol }}
+    </button>
+</div>

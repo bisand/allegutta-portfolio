@@ -218,6 +218,7 @@ app.post('/portfolio/api/portfolio', checkJwt, (req: Request, res: Response) => 
     portfolio = req.body;
     const yahooApi = new YahooApi();
     yahooApi.savePortfolio(portfolio);
+    res.json({ result: 'ok' })
 });
 
 // Regularly ping clients to make sure they are still alive.

@@ -4,14 +4,13 @@ import bodyParser from 'body-parser';
 import WebSocket from 'ws';
 import path from 'path';
 import fs from 'fs';
-import os from 'os';
 import jwt from 'express-jwt';
-// import jwtAuthz from 'express-jwt-authz';
 import jwksRsa from 'jwks-rsa';
 import { YahooApi } from './yahoo';
-import { DataRepository } from './repository';
 import { Portfolio } from './models/portfolio';
-import { Nordnet } from './nordnet';
+import { NordnetApi } from './nordnet';
+import { NordnetPosition } from "./models/NordnetPosition";
+import dotenv from 'dotenv';
 
 interface ExtWebSocket extends WebSocket {
     isAlive: boolean;
@@ -63,6 +62,12 @@ async function fetchPortfolio(): Promise<Portfolio> {
     const yahooApi = new YahooApi();
     const portfolio: Portfolio = await yahooApi.get_portfolio();
     return portfolio;
+}
+
+async function fetchNordnetPortfolio(): Promise<NordnetPosition[]> {
+    const nordnetApi = new NordnetApi(process.env.NORDNET_USERNAME, process.env.NORDNET_PASSWORD);
+    const positions: NordnetPosition[] = await nordnetApi.getPositions();
+    return positions;
 }
 
 async function loadPortfolioFromDisk(): Promise<Portfolio> {
@@ -202,6 +207,11 @@ app.get('/portfolio/api/info', (req: Request, res: Response) => {
     });
 });
 
+app.get('/portfolio/api/nordnet-positions', async (req: Request, res: Response) => {
+    const result = await fetchNordnetPortfolio();
+    res.json(result);
+});
+
 app.get('/portfolio/api/chart', async (req: Request, res: Response) => {
     const symbol = req.query.symbol as any;
     const yahooApi = new YahooApi();
@@ -249,4 +259,5 @@ const portfolioInterval = setInterval(async () => {
 //    });
 // });
 
+dotenv.config();
 app.listen(4000);

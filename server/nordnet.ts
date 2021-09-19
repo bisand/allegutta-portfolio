@@ -1,7 +1,8 @@
 import puppeteer from 'puppeteer';
 import { Option } from './Option';
+import { NordnetPosition } from './models/NordnetPosition';
 
-export class Nordnet {
+export class NordnetApi {
     private _username: string;
     private _password: string;
     public get username(): string {
@@ -44,7 +45,7 @@ export class Nordnet {
         })
     }
 
-    async getPortfolio(): Promise<any> {
+    async getPositions(): Promise<any> {
         return new Promise(async (resolve, reject) => {
             try {
                 const URL = 'https://www.nordnet.no/login-next'
@@ -88,7 +89,7 @@ export class Nordnet {
                         });
                         if (Array.isArray(json) && json.length > 0 && json[posIdx]['body'] && Array.isArray(json[posIdx]['body'])) {
                             dataCollected = true;
-                            let data = json[posIdx]['body'];
+                            let data: NordnetPosition[] = json[posIdx]['body'];
                             resolve(data);
                         }
                     }

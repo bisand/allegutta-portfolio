@@ -11,6 +11,7 @@ import jwksRsa from 'jwks-rsa';
 import { YahooApi } from './yahoo';
 import { DataRepository } from './repository';
 import { Portfolio } from './models/portfolio';
+import { Nordnet } from './nordnet';
 
 interface ExtWebSocket extends WebSocket {
     isAlive: boolean;

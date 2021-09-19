@@ -1,11 +1,28 @@
 import puppeteer from 'puppeteer';
-import dotenv from 'dotenv';
+import { Option } from './Option';
 
-class Nordnet {
-    constructor() {
-
+export class Nordnet {
+    private _username: string;
+    private _password: string;
+    public get username(): string {
+        return this._username;
     }
-    const once = function (checkFn, opts = {}) {
+    public set username(value: string) {
+        this._username = value;
+    }
+    public get password(): string {
+        return this._password;
+    }
+    public set password(value: string) {
+        this._password = value;
+    }
+
+    constructor(username: string, password: string) {
+        this._username = username;
+        this._password = password;
+    }
+
+    private once(checkFn, opts = new Option()) {
         return new Promise((resolve, reject) => {
             const startTime = new Date();
             const timeout = opts.timeout || 10000;
@@ -16,7 +33,7 @@ class Nordnet {
                 const ready = checkFn();
                 if (ready) {
                     resolve(ready);
-                } else if ((new Date()) - startTime > timeout) {
+                } else if (((new Date()).valueOf() - startTime.valueOf()) > timeout) {
                     reject(new Error(timeoutMsg));
                 } else {
                     setTimeout(poll, interval);
@@ -26,81 +43,71 @@ class Nordnet {
             poll();
         })
     }
-    
-    async function login(): Promise<void> {
-    try {
-        const URL = 'https://www.nordnet.no/login-next'
-        const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1024, height: 768 }, args: ['--disable-dev-shm-usage'] })
-        const page = await browser.newPage()
 
-        await page.goto(URL)
-        await page.click('button#cookie-accept-all-secondary');
-        await page.click('button#otp-view')
+    async getPortfolio(): Promise<any> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const URL = 'https://www.nordnet.no/login-next'
+                const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1024, height: 768 }, args: ['--disable-dev-shm-usage'] })
+                const page = await browser.newPage()
 
-        await page.type('input[name="username"]', process.env.NORDNET_USERNAME)
-        await page.type('input[name="password"]', process.env.NORDNET_PASSWORD)
+                await page.goto(URL)
+                await page.click('button#cookie-accept-all-secondary');
+                await page.click('button#otp-view')
 
-        await Promise.all([
-            page.click('button[type="submit"]'),
-            page.waitForNavigation(),
-        ]);
+                await page.type('input[name="username"]', this._username)
+                await page.type('input[name="password"]', this._password)
 
-        let dataCollected = false;
-        page.on('response', async response => {
-            const isAPI = response.url().includes('/api/2/batch')
-            const isPOST = response.request().method() === 'POST'
-            const isJson = response.headers()['content-type'].includes('application/json');
+                await Promise.all([
+                    page.click('button[type="submit"]'),
+                    page.waitForNavigation(),
+                ]);
 
-            if (isAPI && isPOST && isJson) {
-                const postData = JSON.parse(JSON.parse(response.request().postData())['batch']);
-                let posIdx = -1;
-                for (let i = 0; i < postData.length; i++) {
-                    const item = postData[i];
-                    if (item.relative_url.includes('accounts/2/positions')) {
-                        posIdx = i;
-                        break;
+                let dataCollected = false;
+                page.on('response', async response => {
+                    const isAPI = response.url().includes('/api/2/batch')
+                    const isPOST = response.request().method() === 'POST'
+                    const isJson = response.headers()['content-type'].includes('application/json');
+
+                    if (isAPI && isPOST && isJson) {
+                        const postData = JSON.parse(JSON.parse(response.request().postData())['batch']);
+                        let posIdx = -1;
+                        for (let i = 0; i < postData.length; i++) {
+                            const item = postData[i];
+                            if (item.relative_url.includes('accounts/2/positions')) {
+                                posIdx = i;
+                                break;
+                            }
+                        }
+
+                        if (posIdx === -1)
+                            return;
+
+                        const json = await response.json().catch(err => {
+                            console.error(err);
+                        });
+                        if (Array.isArray(json) && json.length > 0 && json[posIdx]['body'] && Array.isArray(json[posIdx]['body'])) {
+                            dataCollected = true;
+                            let data = json[posIdx]['body'];
+                            resolve(data);
+                        }
                     }
-                }
-
-                if (posIdx === -1)
-                    return;
-
-                const json = await response.json().catch(err => {
-                    console.error(err);
                 });
-                if (Array.isArray(json) && json.length > 0 && json[posIdx]['body'] && Array.isArray(json[posIdx]['body'])) {
-                    console.log('Reading...');
-                    json[posIdx]['body'].forEach(data => {
-                        console.log(data);
-                    });
-                    console.log('\n 🚀 We got one!: ', response.url());
-                    dataCollected = true;
-                }
+
+                await Promise.all([
+                    page.goto('https://www.nordnet.no/overview/details/2', { /*waitUntil: 'networkidle0' */ }),
+                    this.once(() => dataCollected)
+                ]).catch(reason => {
+                    console.error(reason);
+                    reject(reason);
+                });
+
+                await browser.close();
+
+            } catch (error) {
+                console.error(error);
+                reject(error);
             }
         });
-
-        await Promise.all([
-            page.goto('https://www.nordnet.no/overview/details/2', { /*waitUntil: 'networkidle0' */ }),
-            once(() => dataCollected)
-        ]).catch(reason => {
-            console.error(reason);
-        });
-
-        await browser.close();
-
-    } catch (error) {
-        console.error(error)
     }
-}
-
-async function app() {
-    dotenv.config();
-    if (process.env.NORDNET_USERNAME && process.env.NORDNET_PASSWORD) {
-        await login();
-    } else {
-        console.error('Missing environment variables: NORDNET_USERNAME, NORDNET_PASSWORD')
-    }
-    console.log('Done!');
-}
-    }
-export = Nordnet;
+};

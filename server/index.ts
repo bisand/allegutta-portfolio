@@ -11,6 +11,7 @@ import { Portfolio } from './models/portfolio';
 import { NordnetApi } from './nordnet';
 import { NordnetPosition } from "./models/NordnetPosition";
 import dotenv from 'dotenv';
+import { PortfolioPosition } from "./models/position";
 
 interface ExtWebSocket extends WebSocket {
     isAlive: boolean;
@@ -209,7 +210,25 @@ app.get('/portfolio/api/info', (req: Request, res: Response) => {
 
 app.get('/portfolio/api/nordnet-positions', async (req: Request, res: Response) => {
     const result = await fetchNordnetPortfolio();
-    res.json(result);
+    let newResult = result.map((item) => {
+        let pos: PortfolioPosition = {
+            id: 0,
+            symbol: item.instrument.symbol,
+            shares: item.qty,
+            avg_price: item.acq_price.value,
+            name: item.instrument.name,
+            last_price: 0,
+            change_today: 0,
+            change_today_percent: 0,
+            prev_close: 0,
+            cost_value: 0,
+            current_value: 0,
+            return: 0,
+            return_percent: 0
+        };
+        return pos;
+    });
+    res.json(newResult);
 });
 
 app.get('/portfolio/api/chart', async (req: Request, res: Response) => {

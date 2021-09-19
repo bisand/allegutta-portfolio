@@ -269,14 +269,7 @@ const portfolioInterval = setInterval(async () => {
     publishPortfolio(portfolio);
 }, config.dataFetchInterval);
 
-// const repo = new DataRepository('./data/allegutta.db');
-// loadPortfolioFromDisk().then(async portfolio => {
-//    await repo.initAsync();
-//    await repo.importPortfolioAsync(portfolio);
-//    const data = await repo.getPortfolioAsync('AlleGutta').catch(err => {
-//        console.log(err);
-//    });
-// });
+// TODO Create a retriever in Nordnet that in given intervals scrapes the NordNet site, and publishes different results in event handlers. One EventHandler per kind. Positions, Summary, etc.
 
 dotenv.config();
 app.listen(4000);

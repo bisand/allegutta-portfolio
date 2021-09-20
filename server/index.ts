@@ -17,11 +17,14 @@ interface ExtWebSocket extends WebSocket {
     isAlive: boolean;
 }
 
+dotenv.config();
+
 let connectedClients: number = 0;
 const appBase = express();
 const wsInstance = expressWs(appBase);
 const wss = wsInstance.getWss();
 const { app } = wsInstance;
+const nordnetApi = new NordnetApi(process.env.NORDNET_USERNAME, process.env.NORDNET_PASSWORD);
 
 let config = {
     dataFetchInterval: 11533,
@@ -66,8 +69,7 @@ async function fetchPortfolio(): Promise<Portfolio> {
 }
 
 async function fetchNordnetPortfolio(): Promise<NordnetPosition[]> {
-    const nordnetApi = new NordnetApi(process.env.NORDNET_USERNAME, process.env.NORDNET_PASSWORD);
-    const positions: NordnetPosition[] = await nordnetApi.getPositions();
+    const positions: NordnetPosition[] = await nordnetApi.getBatchData('accounts/2/positions');
     return positions;
 }
 
@@ -270,6 +272,10 @@ const portfolioInterval = setInterval(async () => {
 }, config.dataFetchInterval);
 
 // TODO Create a retriever in Nordnet that in given intervals scrapes the NordNet site, and publishes different results in event handlers. One EventHandler per kind. Positions, Summary, etc.
+nordnetApi.onPositionsReceived = (positions: NordnetPosition[]) => {
 
-dotenv.config();
+};
+
+nordnetApi.startPolling(60);
+
 app.listen(4000);

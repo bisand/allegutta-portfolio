@@ -1,10 +1,14 @@
 import puppeteer from 'puppeteer';
 import { Option } from './Option';
 import { NordnetPosition } from './models/NordnetPosition';
+import { PortfolioPosition } from './models/position';
 
 export class NordnetApi {
     private _username: string;
     private _password: string;
+
+    public onPositionsReceived?: (positions: NordnetPosition[]) => void
+
     public get username(): string {
         return this._username;
     }
@@ -45,7 +49,15 @@ export class NordnetApi {
         })
     }
 
-    async getPositions(): Promise<any> {
+    public async startPolling(pollIntervalMinutes: number) {
+        setTimeout(async () => {
+            if (!this.onPositionsReceived) return
+            const positions: NordnetPosition[] = await this.getBatchData('accounts/2/positions');
+            this.onPositionsReceived(positions)
+        }, pollIntervalMinutes * 1000);
+    }
+
+    public async getBatchData(batchPath: string): Promise<any> {
         return new Promise(async (resolve, reject) => {
             try {
                 const URL = 'https://www.nordnet.no/login-next'
@@ -75,22 +87,18 @@ export class NordnetApi {
                         let posIdx = -1;
                         for (let i = 0; i < postData.length; i++) {
                             const item = postData[i];
-                            if (item.relative_url.includes('accounts/2/positions')) {
+                            if (item.relative_url.includes(batchPath)) {
                                 posIdx = i;
-                                break;
+                                const json = await response.json().catch(err => {
+                                    console.error(err);
+                                    reject(err);
+                                });
+                                if (Array.isArray(json) && json.length > 0 && json[posIdx]['body'] && Array.isArray(json[posIdx]['body'])) {
+                                    dataCollected = true;
+                                    let data: NordnetPosition[] = json[posIdx]['body'];
+                                    resolve(data);
+                                }
                             }
-                        }
-
-                        if (posIdx === -1)
-                            return;
-
-                        const json = await response.json().catch(err => {
-                            console.error(err);
-                        });
-                        if (Array.isArray(json) && json.length > 0 && json[posIdx]['body'] && Array.isArray(json[posIdx]['body'])) {
-                            dataCollected = true;
-                            let data: NordnetPosition[] = json[posIdx]['body'];
-                            resolve(data);
                         }
                     }
                 });

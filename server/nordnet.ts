@@ -1,9 +1,14 @@
 import puppeteer from 'puppeteer';
 import { Option } from './Option';
-import { NordnetPosition } from './models/NordnetPosition';
+import { NordnetPosition } from "./models/NordnetPosition";
 import { PortfolioPosition } from './models/position';
+import { NordnetPositionsCache } from './models/NordnetPositionsCache';
+import { NordnetBatchData as NordnetBatchData } from './models/NordnetBatchData';
 
 export class NordnetApi {
+
+    private static nordnetBatchData: NordnetBatchData = new NordnetBatchData();
+
     private _username: string;
     private _password: string;
 
@@ -51,13 +56,14 @@ export class NordnetApi {
 
     public async startPolling(pollIntervalMinutes: number) {
         setTimeout(async () => {
-            if (!this.onPositionsReceived) return
-            const positions: NordnetPosition[] = await this.getBatchData('accounts/2/positions');
-            this.onPositionsReceived(positions)
+            if (!this.onPositionsReceived)
+                return;
+            const data: NordnetBatchData = await this.getBatchData();
+            this.onPositionsReceived(data.nordnetPositionsCache.nordnetPositions);
         }, pollIntervalMinutes * 1000);
     }
 
-    public async getBatchData(batchPath: string): Promise<any> {
+    public async getBatchData(): Promise<NordnetBatchData> {
         return new Promise(async (resolve, reject) => {
             try {
                 const URL = 'https://www.nordnet.no/login-next'
@@ -76,7 +82,7 @@ export class NordnetApi {
                     page.waitForNavigation(),
                 ]);
 
-                let dataCollected = false;
+                let dataCollected: number = 0;
                 page.on('response', async response => {
                     const isAPI = response.url().includes('/api/2/batch')
                     const isPOST = response.request().method() === 'POST'
@@ -87,16 +93,16 @@ export class NordnetApi {
                         let posIdx = -1;
                         for (let i = 0; i < postData.length; i++) {
                             const item = postData[i];
-                            if (item.relative_url.includes(batchPath)) {
+                            if (item.relative_url.includes('accounts/2/positions')) {
                                 posIdx = i;
                                 const json = await response.json().catch(err => {
                                     console.error(err);
                                     reject(err);
                                 });
                                 if (Array.isArray(json) && json.length > 0 && json[posIdx]['body'] && Array.isArray(json[posIdx]['body'])) {
-                                    dataCollected = true;
-                                    let data: NordnetPosition[] = json[posIdx]['body'];
-                                    resolve(data);
+                                    dataCollected++;
+                                    NordnetApi.nordnetBatchData.nordnetPositionsCache.nordnetPositions = json[posIdx]['body'];
+                                    NordnetApi.nordnetBatchData.nordnetPositionsCache.cacheUpdated = new Date(Date.now());
                                 }
                             }
                         }
@@ -104,12 +110,13 @@ export class NordnetApi {
                 });
 
                 await Promise.all([
-                    page.goto('https://www.nordnet.no/overview/details/2', { /*waitUntil: 'networkidle0' */ }),
-                    this.once(() => dataCollected)
+                    page.goto('https://www.nordnet.no/overview/details/2', { waitUntil: 'networkidle0' }),
+                    this.once(() => dataCollected < 1)
                 ]).catch(reason => {
                     console.error(reason);
                     reject(reason);
                 });
+                resolve(NordnetApi.nordnetBatchData);
 
                 await browser.close();
 

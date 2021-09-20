@@ -12,6 +12,7 @@ import { NordnetApi } from './nordnet';
 import { NordnetPosition } from "./models/NordnetPosition";
 import dotenv from 'dotenv';
 import { PortfolioPosition } from "./models/position";
+import { NordnetBatchData } from "./models/NordnetBatchData";
 
 interface ExtWebSocket extends WebSocket {
     isAlive: boolean;
@@ -68,9 +69,9 @@ async function fetchPortfolio(): Promise<Portfolio> {
     return portfolio;
 }
 
-async function fetchNordnetPortfolio(): Promise<NordnetPosition[]> {
-    const positions: NordnetPosition[] = await nordnetApi.getBatchData('accounts/2/positions');
-    return positions;
+async function fetchNordnetPortfolio(): Promise<NordnetBatchData> {
+    const data: NordnetBatchData = await nordnetApi.getBatchData();
+    return data;
 }
 
 async function loadPortfolioFromDisk(): Promise<Portfolio> {
@@ -212,7 +213,7 @@ app.get('/portfolio/api/info', (req: Request, res: Response) => {
 
 app.get('/portfolio/api/nordnet-positions', async (req: Request, res: Response) => {
     const result = await fetchNordnetPortfolio();
-    let newResult = result.map((item) => {
+    let newResult = result.nordnetPositionsCache.nordnetPositions.map((item) => {
         let pos: PortfolioPosition = {
             id: 0,
             symbol: item.instrument.symbol,

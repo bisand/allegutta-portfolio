@@ -63,7 +63,7 @@ export class NordnetApi {
         }, pollIntervalMinutes * 1000);
     }
 
-    public async getBatchData(): Promise<NordnetBatchData> {
+    public async getBatchData(forceRun: boolean = false): Promise<NordnetBatchData> {
         return new Promise(async (resolve, reject) => {
             try {
                 const URL = 'https://www.nordnet.no/login-next'

@@ -213,7 +213,7 @@ app.get('/portfolio/api/info', (req: Request, res: Response) => {
 
 app.get('/portfolio/api/nordnet-positions', async (req: Request, res: Response) => {
     const result = await fetchNordnetPortfolio();
-    let newResult = result.nordnetPositionsCache.nordnetPositions.map((item) => {
+    let newResult = result?.nordnetPositionsCache?.nordnetPositions?.map((item) => {
         let pos: PortfolioPosition = {
             id: 0,
             symbol: item.instrument.symbol,

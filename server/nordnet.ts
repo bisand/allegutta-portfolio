@@ -54,7 +54,7 @@ export class NordnetApi {
         })
     }
 
-    public async startPolling(pollIntervalMinutes: number) {
+    public async startPolling(pollIntervalMinutes: number = 60) {
         setTimeout(async () => {
             if (!this.onPositionsReceived)
                 return;
@@ -64,7 +64,12 @@ export class NordnetApi {
     }
 
     public async getBatchData(forceRun: boolean = false): Promise<NordnetBatchData> {
+        const timeout: number = 60 * 60 * 1000;
         return new Promise(async (resolve, reject) => {
+            if (!forceRun && NordnetApi.nordnetBatchData.cacheUpdated && (((new Date()).valueOf() - NordnetApi.nordnetBatchData.cacheUpdated.valueOf()) < timeout)) {
+                resolve(NordnetApi.nordnetBatchData);
+                return;
+            }
             try {
                 const URL = 'https://www.nordnet.no/login-next'
                 const browser = await puppeteer.launch({ headless: true, defaultViewport: { width: 1024, height: 768 }, args: ['--disable-dev-shm-usage'] })
@@ -102,7 +107,8 @@ export class NordnetApi {
                                 if (Array.isArray(json) && json.length > 0 && json[posIdx]['body'] && Array.isArray(json[posIdx]['body'])) {
                                     dataCollected++;
                                     NordnetApi.nordnetBatchData.nordnetPositionsCache.nordnetPositions = json[posIdx]['body'];
-                                    NordnetApi.nordnetBatchData.nordnetPositionsCache.cacheUpdated = new Date(Date.now());
+                                    NordnetApi.nordnetBatchData.nordnetPositionsCache.cacheUpdated = new Date();
+                                    NordnetApi.nordnetBatchData.cacheUpdated = new Date();
                                 }
                             }
                         }

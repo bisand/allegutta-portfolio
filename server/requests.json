@@ -1,0 +1,90 @@
+[
+    {
+        "batch": [
+            {
+                "relative_url": "user/settings/lastVisitedAccid",
+                "method": "GET"
+            },
+            {
+                "relative_url": "accounts/2/ledgers",
+                "method": "GET"
+            },
+            {
+                "relative_url": "accounts/2/bank_account_info",
+                "method": "GET"
+            },
+            {
+                "relative_url": "accounts/2/returns/today",
+                "method": "GET"
+            },
+            {
+                "relative_url": "banking/2/lending/info_extended",
+                "method": "GET"
+            }
+        ]
+    },
+    {
+        "batch": [
+            {
+                "relative_url": "accounts/2/yield_tax/upcoming_transaction",
+                "method": "GET"
+            },
+            {
+                "relative_url": "accounts/2/clearingplace_accounts",
+                "method": "GET"
+            },
+            {
+                "relative_url": "accounts/2/fees_and_refunds_summary",
+                "method": "GET"
+            },
+            {
+                "relative_url": "accounts/2/positions?include_instrument_loans=true",
+                "method": "GET"
+            },
+            {
+                "relative_url": "accounts/2/returns/performance?period=m1",
+                "method": "GET"
+            }
+        ]
+    },
+    {
+        "batch": [
+            {
+                "relative_url": "markets",
+                "method": "GET"
+            },
+            {
+                "relative_url": "exchange_rates",
+                "method": "GET"
+            },
+            {
+                "relative_url": "instruments/16105606,16105712,16105684,16105593,16105666,17447523,17519997,16105630,17434301,17473891,16105612,16418421,16105717,17367126,17058977,17534483,16105737,16105595,16505567,16298994,16105427,16105713,16105608,17283497,16324395,16105604,16156313,16105667,,16105575,16105626",
+                "method": "GET"
+            },
+            {
+                "relative_url": "tick_sizes/34831242,34831241,34831240,34831238,34831239",
+                "method": "GET"
+            }
+        ]
+    },
+    {
+        "relative_url": "accounts/2/info?include_interest_rate=false",
+        "method": "GET"
+    },
+    {
+        "relative_url": "accounts/2/ledgers",
+        "method": "GET"
+    },
+    {
+        "relative_url": "banking/2/lending/info_extended",
+        "method": "GET"
+    },
+    {
+        "relative_url": "accounts/2/yield_tax/upcoming_transaction",
+        "method": "GET"
+    },
+    {
+        "relative_url": "accounts/2/positions?include_instrument_loans=true",
+        "method": "GET"
+    }
+]

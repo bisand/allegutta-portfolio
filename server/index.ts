@@ -4,23 +4,28 @@ import bodyParser from 'body-parser';
 import WebSocket from 'ws';
 import path from 'path';
 import fs from 'fs';
-import os from 'os';
 import jwt from 'express-jwt';
-// import jwtAuthz from 'express-jwt-authz';
 import jwksRsa from 'jwks-rsa';
 import { YahooApi } from './yahoo';
-import { DataRepository } from './repository';
 import { Portfolio } from './models/portfolio';
+import { NordnetApi } from './nordnet';
+import { NordnetPosition } from "./models/NordnetPosition";
+import dotenv from 'dotenv';
+import { PortfolioPosition } from "./models/position";
+import { NordnetBatchData } from "./models/NordnetBatchData";
 
 interface ExtWebSocket extends WebSocket {
     isAlive: boolean;
 }
+
+dotenv.config();
 
 let connectedClients: number = 0;
 const appBase = express();
 const wsInstance = expressWs(appBase);
 const wss = wsInstance.getWss();
 const { app } = wsInstance;
+const nordnetApi = new NordnetApi(process.env.NORDNET_USERNAME, process.env.NORDNET_PASSWORD);
 
 let config = {
     dataFetchInterval: 11533,
@@ -62,6 +67,11 @@ async function fetchPortfolio(): Promise<Portfolio> {
     const yahooApi = new YahooApi();
     const portfolio: Portfolio = await yahooApi.get_portfolio();
     return portfolio;
+}
+
+async function fetchNordnetPortfolio(): Promise<NordnetBatchData> {
+    const data: NordnetBatchData = await nordnetApi.getBatchData();
+    return data;
 }
 
 async function loadPortfolioFromDisk(): Promise<Portfolio> {
@@ -201,6 +211,34 @@ app.get('/portfolio/api/info', (req: Request, res: Response) => {
     });
 });
 
+app.get('/portfolio/api/nordnet-positions', async (req: Request, res: Response) => {
+    const result = await fetchNordnetPortfolio();
+    let newResult = result?.nordnetPositions?.map((item) => {
+        let pos: PortfolioPosition = {
+            id: 0,
+            symbol: item.instrument.symbol,
+            shares: item.qty,
+            avg_price: item.acq_price.value,
+            name: item.instrument.name,
+            last_price: 0,
+            change_today: 0,
+            change_today_percent: 0,
+            prev_close: 0,
+            cost_value: 0,
+            current_value: 0,
+            return: 0,
+            return_percent: 0
+        };
+        return pos;
+    });
+    res.json(newResult);
+});
+
+app.get('/portfolio/api/nordnet-portfolio', async (req: Request, res: Response) => {
+    const result = await fetchNordnetPortfolio();
+    res.json(result);
+});
+
 app.get('/portfolio/api/chart', async (req: Request, res: Response) => {
     const symbol = req.query.symbol as any;
     const yahooApi = new YahooApi();
@@ -239,13 +277,23 @@ const portfolioInterval = setInterval(async () => {
     publishPortfolio(portfolio);
 }, config.dataFetchInterval);
 
-// const repo = new DataRepository('./data/allegutta.db');
-// loadPortfolioFromDisk().then(async portfolio => {
-//    await repo.initAsync();
-//    await repo.importPortfolioAsync(portfolio);
-//    const data = await repo.getPortfolioAsync('AlleGutta').catch(err => {
-//        console.log(err);
-//    });
-// });
+nordnetApi.onBatchDataReceived = (batchData: NordnetBatchData) => {
+    console.log(batchData);
+    if (!portfolio)
+        portfolio = new Portfolio();
+
+    portfolio.cash = batchData.nordnetAccountInfo.account_sum.value;
+    Object.assign(portfolio.positions, batchData.nordnetPositions.map(item => {
+        return { symbol: item.instrument.symbol + '.OL', shares: item.qty, avg_price: item.acq_price.value };
+    }));
+    const yahooApi = new YahooApi();
+    yahooApi.savePortfolio(portfolio);
+};
+nordnetApi.onError = (error: any) => {
+    console.error(error);
+};
+
+// Start checking for portfolio changes every 60 minutes.
+nordnetApi.startPolling(60);
 
 app.listen(4000);

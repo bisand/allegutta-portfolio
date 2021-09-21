@@ -1,6 +1,5 @@
 import { NordnetTradable } from "./NordnetTradable";
 
-
 export interface NordnetInstrument {
   mifid2_category: number;
   price_type: string;

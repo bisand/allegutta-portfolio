@@ -1,8 +1,6 @@
 import puppeteer from 'puppeteer';
 import { Option } from './Option';
 import { NordnetPosition } from "./models/NordnetPosition";
-import { PortfolioPosition } from './models/position';
-import { NordnetPositionsCache } from './models/NordnetPositionsCache';
 import { NordnetBatchData as NordnetBatchData } from './models/NordnetBatchData';
 
 export class NordnetApi {
@@ -11,9 +9,11 @@ export class NordnetApi {
 
     private _username: string;
     private _password: string;
+    private _intervalPointer: NodeJS.Timeout;
 
-    public onPositionsReceived?: (positions: NordnetPosition[]) => void
-
+    public onBatchDataReceived?: (batchData: NordnetBatchData) => void;
+    public onError?: (error: any) => void;
+    
     public get username(): string {
         return this._username;
     }
@@ -55,16 +55,26 @@ export class NordnetApi {
     }
 
     public async startPolling(pollIntervalMinutes: number = 60) {
-        setTimeout(async () => {
-            if (!this.onPositionsReceived)
+        clearInterval(this._intervalPointer);
+        this._intervalPointer = setInterval(async () => {
+            if (!this.onBatchDataReceived)
                 return;
-            const data: NordnetBatchData = await this.getBatchData();
-            this.onPositionsReceived(data.nordnetPositionsCache.nordnetPositions);
-        }, pollIntervalMinutes * 1000);
+            try {
+                const data: NordnetBatchData = await this.getBatchData(true);
+                this.onBatchDataReceived(data);
+            } catch (err) {
+                if (this.onError)
+                    this.onError(err);
+            }
+        }, pollIntervalMinutes * 60 * 1000);
     }
 
-    public async getBatchData(forceRun: boolean = false): Promise<NordnetBatchData> {
-        const timeout: number = 60 * 60 * 1000;
+    public async stopPolling() {
+        clearInterval(this._intervalPointer);
+    }
+
+    public async getBatchData(forceRun: boolean = false, refreshIntervalMinutes: number = 60): Promise<NordnetBatchData> {
+        const timeout: number = refreshIntervalMinutes * 60 * 1000;
         return new Promise(async (resolve, reject) => {
             if (!forceRun && NordnetApi.nordnetBatchData.cacheUpdated && (((new Date()).valueOf() - NordnetApi.nordnetBatchData.cacheUpdated.valueOf()) < timeout)) {
                 resolve(NordnetApi.nordnetBatchData);
@@ -95,19 +105,23 @@ export class NordnetApi {
 
                     if (isAPI && isPOST && isJson) {
                         const postData = JSON.parse(JSON.parse(response.request().postData())['batch']);
-                        let posIdx = -1;
+                        const json = await response.json().catch(err => {
+                            console.error(err);
+                            reject(err);
+                        });
                         for (let i = 0; i < postData.length; i++) {
                             const item = postData[i];
                             if (item.relative_url.includes('accounts/2/positions')) {
-                                posIdx = i;
-                                const json = await response.json().catch(err => {
-                                    console.error(err);
-                                    reject(err);
-                                });
-                                if (Array.isArray(json) && json.length > 0 && json[posIdx]['body'] && Array.isArray(json[posIdx]['body'])) {
+                                if (Array.isArray(json) && json.length > 0 && json[i]['body'] && Array.isArray(json[i]['body'])) {
                                     dataCollected++;
-                                    NordnetApi.nordnetBatchData.nordnetPositionsCache.nordnetPositions = json[posIdx]['body'];
-                                    NordnetApi.nordnetBatchData.nordnetPositionsCache.cacheUpdated = new Date();
+                                    NordnetApi.nordnetBatchData.nordnetPositions = json[i]['body'];
+                                    NordnetApi.nordnetBatchData.cacheUpdated = new Date();
+                                }
+                            }
+                            if (item.relative_url.includes('accounts/2/info')) {
+                                if (Array.isArray(json) && json.length > 0 && json[i]['body'] && Array.isArray(json[i]['body']) && json[i]['body'].length > 0) {
+                                    dataCollected++;
+                                    NordnetApi.nordnetBatchData.nordnetAccountInfo = json[i]['body'][0];
                                     NordnetApi.nordnetBatchData.cacheUpdated = new Date();
                                 }
                             }

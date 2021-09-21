@@ -1,11 +1,13 @@
+import { NordnetAccountInfo } from "./NordnetAccountInfo";
 import { NordnetPosition } from "./NordnetPosition";
-import { NordnetPositionsCache } from "./NordnetPositionsCache";
 
 export class NordnetBatchData {
-    public nordnetPositionsCache?: NordnetPositionsCache;
+    public nordnetAccountInfo: NordnetAccountInfo;
+    public nordnetPositions?: NordnetPosition[];
     public cacheUpdated?: Date;
 
     constructor(){
-        this.nordnetPositionsCache = new NordnetPositionsCache();
+        this.nordnetAccountInfo = new NordnetAccountInfo();
+        this.nordnetPositions = [];
     }
 }

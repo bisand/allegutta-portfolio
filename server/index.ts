@@ -213,7 +213,7 @@ app.get('/portfolio/api/info', (req: Request, res: Response) => {
 
 app.get('/portfolio/api/nordnet-positions', async (req: Request, res: Response) => {
     const result = await fetchNordnetPortfolio();
-    let newResult = result?.nordnetPositionsCache?.nordnetPositions?.map((item) => {
+    let newResult = result?.nordnetPositions?.map((item) => {
         let pos: PortfolioPosition = {
             id: 0,
             symbol: item.instrument.symbol,
@@ -232,6 +232,11 @@ app.get('/portfolio/api/nordnet-positions', async (req: Request, res: Response) 
         return pos;
     });
     res.json(newResult);
+});
+
+app.get('/portfolio/api/nordnet-portfolio', async (req: Request, res: Response) => {
+    const result = await fetchNordnetPortfolio();
+    res.json(result);
 });
 
 app.get('/portfolio/api/chart', async (req: Request, res: Response) => {
@@ -273,10 +278,12 @@ const portfolioInterval = setInterval(async () => {
 }, config.dataFetchInterval);
 
 // TODO Create a retriever in Nordnet that in given intervals scrapes the NordNet site, and publishes different results in event handlers. One EventHandler per kind. Positions, Summary, etc.
-nordnetApi.onPositionsReceived = (positions: NordnetPosition[]) => {
-
+nordnetApi.onBatchDataReceived = (batchData: NordnetBatchData) => {
+    console.log(batchData);
 };
-
-nordnetApi.startPolling(60);
+nordnetApi.onError = (error: any) => {
+    console.error(error);
+};
+nordnetApi.startPolling(1);
 
 app.listen(4000);

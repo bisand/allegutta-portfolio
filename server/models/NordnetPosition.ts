@@ -1,7 +1,6 @@
 import { NordnetPrice } from "./NordnetPrice";
 import { NordnetInstrument } from "./NordnetInstrument";
 
-
 export interface NordnetPosition {
   accno: number;
   accid: number;

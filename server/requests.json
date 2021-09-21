@@ -66,5 +66,25 @@
                 "method": "GET"
             }
         ]
+    },
+    {
+        "relative_url": "accounts/2/info?include_interest_rate=false",
+        "method": "GET"
+    },
+    {
+        "relative_url": "accounts/2/ledgers",
+        "method": "GET"
+    },
+    {
+        "relative_url": "banking/2/lending/info_extended",
+        "method": "GET"
+    },
+    {
+        "relative_url": "accounts/2/yield_tax/upcoming_transaction",
+        "method": "GET"
+    },
+    {
+        "relative_url": "accounts/2/positions?include_instrument_loans=true",
+        "method": "GET"
     }
 ]

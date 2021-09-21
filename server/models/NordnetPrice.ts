@@ -1,4 +1,6 @@
+import { NordnetCurrency } from "./Currency";
+
 export interface NordnetPrice {
-  currency: string;
+  currency: NordnetCurrency;
   value: number;
 }

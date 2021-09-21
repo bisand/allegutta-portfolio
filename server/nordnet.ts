@@ -7,13 +7,14 @@ export class NordnetApi {
 
     private static nordnetBatchData: NordnetBatchData = new NordnetBatchData();
 
+    private _self: NordnetApi;
     private _username: string;
     private _password: string;
     private _intervalPointer: NodeJS.Timeout;
 
     public onBatchDataReceived?: (batchData: NordnetBatchData) => void;
     public onError?: (error: any) => void;
-    
+
     public get username(): string {
         return this._username;
     }
@@ -28,8 +29,12 @@ export class NordnetApi {
     }
 
     constructor(username: string, password: string) {
+        if (!username || !password)
+            throw new Error("Username and password must be filled! Use environment variables NORDNET_USERNAME and NORDNET_PASSWORD");
+
         this._username = username;
         this._password = password;
+        this._self = this;
     }
 
     private once(checkFn, opts = new Option()) {
@@ -54,19 +59,22 @@ export class NordnetApi {
         })
     }
 
+    private async updateCache(self: NordnetApi) {
+        if (!self.onBatchDataReceived)
+            return;
+        try {
+            const data: NordnetBatchData = await self.getBatchData(true);
+            self.onBatchDataReceived(data);
+        } catch (err) {
+            if (self.onError)
+                self.onError(err);
+        }
+    }
+
     public async startPolling(pollIntervalMinutes: number = 60) {
         clearInterval(this._intervalPointer);
-        this._intervalPointer = setInterval(async () => {
-            if (!this.onBatchDataReceived)
-                return;
-            try {
-                const data: NordnetBatchData = await this.getBatchData(true);
-                this.onBatchDataReceived(data);
-            } catch (err) {
-                if (this.onError)
-                    this.onError(err);
-            }
-        }, pollIntervalMinutes * 60 * 1000);
+        await this.updateCache(this);
+        this._intervalPointer = setInterval(this.updateCache, pollIntervalMinutes * 60 * 1000, this);
     }
 
     public async stopPolling() {
@@ -89,6 +97,7 @@ export class NordnetApi {
                 await page.click('button#cookie-accept-all-secondary');
                 await page.click('button#otp-view')
 
+                await page.waitForSelector('input[name="username"]', { timeout: 5000 });
                 await page.type('input[name="username"]', this._username)
                 await page.type('input[name="password"]', this._password)
 
@@ -99,30 +108,35 @@ export class NordnetApi {
 
                 let dataCollected: number = 0;
                 page.on('response', async response => {
-                    const isAPI = response.url().includes('/api/2/batch')
-                    const isPOST = response.request().method() === 'POST'
-                    const isJson = response.headers()['content-type'].includes('application/json');
+                    if (!response.ok())
+                        return;
+
+                    const request = response.request();
+                    const headers = response.headers();
+
+                    const url = request.url();
+                    const postDataText = request.postData();
+                    const isAPI = url && url.includes('/api/2/batch')
+                    const isPOST = request.method() === 'POST'
+                    const isJson = headers['content-type'] && headers['content-type'].includes('application/json');
 
                     if (isAPI && isPOST && isJson) {
-                        const postData = JSON.parse(JSON.parse(response.request().postData())['batch']);
-                        const json = await response.json().catch(err => {
-                            console.error(err);
-                            reject(err);
-                        });
+                        const postData = JSON.parse(JSON.parse(postDataText)['batch']);
                         for (let i = 0; i < postData.length; i++) {
                             const item = postData[i];
                             if (item.relative_url.includes('accounts/2/positions')) {
+                                const json = await response.json();
                                 if (Array.isArray(json) && json.length > 0 && json[i]['body'] && Array.isArray(json[i]['body'])) {
-                                    dataCollected++;
                                     NordnetApi.nordnetBatchData.nordnetPositions = json[i]['body'];
                                     NordnetApi.nordnetBatchData.cacheUpdated = new Date();
-                                }
-                            }
-                            if (item.relative_url.includes('accounts/2/info')) {
-                                if (Array.isArray(json) && json.length > 0 && json[i]['body'] && Array.isArray(json[i]['body']) && json[i]['body'].length > 0) {
                                     dataCollected++;
+                                }
+                            } else if (item.relative_url.includes('accounts/2/info')) {
+                                const json = await response.json();
+                                if (Array.isArray(json) && json.length > 0 && json[i]['body'] && Array.isArray(json[i]['body']) && json[i]['body'].length > 0) {
                                     NordnetApi.nordnetBatchData.nordnetAccountInfo = json[i]['body'][0];
                                     NordnetApi.nordnetBatchData.cacheUpdated = new Date();
+                                    dataCollected++;
                                 }
                             }
                         }
@@ -131,9 +145,8 @@ export class NordnetApi {
 
                 await Promise.all([
                     page.goto('https://www.nordnet.no/overview/details/2', { waitUntil: 'networkidle0' }),
-                    this.once(() => dataCollected < 1)
+                    this.once(() => dataCollected < 2)
                 ]).catch(reason => {
-                    console.error(reason);
                     reject(reason);
                 });
                 resolve(NordnetApi.nordnetBatchData);
@@ -141,7 +154,6 @@ export class NordnetApi {
                 await browser.close();
 
             } catch (error) {
-                console.error(error);
                 reject(error);
             }
         });

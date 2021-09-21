@@ -277,13 +277,12 @@ const portfolioInterval = setInterval(async () => {
     publishPortfolio(portfolio);
 }, config.dataFetchInterval);
 
-// TODO Create a retriever in Nordnet that in given intervals scrapes the NordNet site, and publishes different results in event handlers. One EventHandler per kind. Positions, Summary, etc.
 nordnetApi.onBatchDataReceived = (batchData: NordnetBatchData) => {
     console.log(batchData);
 };
 nordnetApi.onError = (error: any) => {
     console.error(error);
 };
-nordnetApi.startPolling(1);
+nordnetApi.startPolling(30);
 
 app.listen(4000);

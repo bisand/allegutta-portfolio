@@ -279,10 +279,21 @@ const portfolioInterval = setInterval(async () => {
 
 nordnetApi.onBatchDataReceived = (batchData: NordnetBatchData) => {
     console.log(batchData);
+    if (!portfolio)
+        portfolio = new Portfolio();
+
+    portfolio.cash = batchData.nordnetAccountInfo.account_sum.value;
+    Object.assign(portfolio.positions, batchData.nordnetPositions.map(item => {
+        return { symbol: item.instrument.symbol + '.OL', shares: item.qty, avg_price: item.acq_price.value };
+    }));
+    const yahooApi = new YahooApi();
+    yahooApi.savePortfolio(portfolio);
 };
 nordnetApi.onError = (error: any) => {
     console.error(error);
 };
-nordnetApi.startPolling(30);
+
+// Start checking for portfolio changes every 60 minutes.
+nordnetApi.startPolling(60);
 
 app.listen(4000);

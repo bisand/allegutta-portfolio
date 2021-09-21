@@ -1,11 +1,11 @@
 <div class="container text-nowrap">
     <div class="card card-default mt-3">
-        <div class="card-header">Detaljer {{ symbol }}</div>
+        <div class="card-header">Detaljer {{ symbol | slice:0:-3 }}</div>
         <div class="card-body">
             <div class="container">
                 <div class="row">
                     <div class="col-6 col-sm-3"><strong>Ticker</strong></div>
-                    <div class="col-6 col-sm-3 text-right">{{ position?.symbol }}</div>
+                    <div class="col-6 col-sm-3 text-right">{{ position?.symbol | slice:0:-3 }}</div>
                     <div class="col-6 col-sm-3"><strong>Navn</strong></div>
                     <div class="col-6 col-sm-3 text-right">{{ position?.name }}</div>
                     <div class="col-6 col-sm-3"><strong>Antall</strong></div>

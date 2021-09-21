@@ -54,7 +54,7 @@
                 <tbody>
                     <tr *ngFor="let position of portfolio.positions" (click)="setData(position)" [routerLink]="['/chart', position.symbol]" [state]="position" style="cursor: default;">
                         <td class="d-lg-none">
-                            <span data-toggle="tooltip" data-placement="right" title="{{ position.name }}">{{ position.symbol }}</span>
+                            <span data-toggle="tooltip" data-placement="right" title="{{ position.name }}">{{ position.symbol | slice:0:-3 }}</span>
                         </td>
                         <td class="d-none d-lg-table-cell">
                             <span data-toggle="tooltip" data-placement="right" title="{{ position.symbol }}">{{ position.name }}</span>

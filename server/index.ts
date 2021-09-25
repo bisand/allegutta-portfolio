@@ -293,7 +293,7 @@ nordnetApi.onError = (error: any) => {
     console.error(error);
 };
 
-// Start checking for portfolio changes every 60 minutes.
-nordnetApi.startPolling(60);
+// Start checking for portfolio changes every 12 hours.
+nordnetApi.startPolling(60*12);
 
 app.listen(4000);

@@ -47,5 +47,5 @@ RUN mv server_dist server
 RUN chown -R pptruser:pptruser /home/pptruser
 USER pptruser
 
-EXPOSE 3000
+EXPOSE 4000
 CMD [ "node", "server/index.js" ]

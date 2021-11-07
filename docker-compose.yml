@@ -1,0 +1,18 @@
+version: '3.4'
+
+services:
+  allegutta-portfolio:
+    # image: bisand/allegutta-portfolio:latest
+    build: .
+    restart: always
+    container_name: allegutta-portfolio
+    ports:
+      - 4000:4000
+    cap_add:
+      - SYS_ADMIN
+    volumes:
+      # Data persistency
+      - ./allegutta/data:/usr/src/app/data
+      - ./allegutta/log:/usr/src/app/log
+      - ./allegutta/config:/usr/src/app/config
+

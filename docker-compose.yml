@@ -1,11 +1,11 @@
 version: '3.4'
 
 services:
-  allegutta-portfolio:
+  web:
     # image: bisand/allegutta-portfolio:latest
     build: .
     restart: always
-    container_name: allegutta-portfolio
+    container_name: portfolio
     ports:
       - 4000:4000
     cap_add:

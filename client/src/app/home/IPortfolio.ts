@@ -4,6 +4,7 @@ export class IPortfolio {
     public id: number = 0;
     public name: string = '';
     public cash: number = 0.0;
+    public ath: number = 0.0;
     public equity: number = 0.0;
     public cost_value: number = 0.0;
     public market_value: number = 0.0;

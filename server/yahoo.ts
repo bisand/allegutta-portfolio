@@ -1,13 +1,13 @@
 import path from 'path';
 import fs from 'fs';
 import got from 'got';
-import queryString from 'query-string';
 import { Portfolio } from './models/portfolio';
 
 export class YahooApi {
     quotesUrl: string;
     portfolio: Portfolio;
     chartUrl: string;
+
     constructor() {
         this.quotesUrl = 'https://query2.finance.yahoo.com/v7/finance/quote';
         this.chartUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/';

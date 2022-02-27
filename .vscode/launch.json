@@ -29,6 +29,25 @@
             "outFiles": [
                 "${workspaceFolder}/server_dist/**/*.js"
             ]
+        },
+        {
+            "name": "ts-node - Launch & debug",
+            "type": "node",
+            "request": "launch",
+            "runtimeArgs": [
+                "-r",
+                "ts-node/register"
+            ],
+            "runtimeExecutable": "node",
+            "args": [
+                "--inspect",
+                "${workspaceFolder}/server/index.ts"
+            ],
+            "cwd": "${workspaceRoot}",
+            "skipFiles": [
+                "<node_internals>/**",
+                "node_modules/**"
+            ]
         }
     ]
 }

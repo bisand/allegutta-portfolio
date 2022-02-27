@@ -67,3 +67,4 @@ typings/
 client_dist
 server_dist
 data
+**/.angular/cache

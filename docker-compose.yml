@@ -15,4 +15,3 @@ services:
       - ./allegutta/data:/usr/src/app/data
       - ./allegutta/log:/usr/src/app/log
       - ./allegutta/config:/usr/src/app/config
-

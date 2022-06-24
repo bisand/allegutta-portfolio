@@ -1,6 +1,6 @@
+import got from 'got';
 import path from 'path';
 import fs from 'fs';
-import got from 'got';
 import { Portfolio } from './models/portfolio';
 
 export class YahooApi {
@@ -9,6 +9,7 @@ export class YahooApi {
     chartUrl: string;
 
     constructor() {
+        this.portfolio = new Portfolio();
         this.quotesUrl = 'https://query2.finance.yahoo.com/v7/finance/quote';
         this.chartUrl = 'https://query1.finance.yahoo.com/v8/finance/chart/';
     }
@@ -64,7 +65,7 @@ export class YahooApi {
         if (quotes) {
             const currentDay = new Date().getDate();
             let newDay: boolean = false;
-            quotes.forEach(element => {
+            quotes.forEach((element: { symbol: any; regularMarketTime: number; longName: string; regularMarketPrice: number; regularMarketChange: number; regularMarketChangePercent: number; regularMarketPreviousClose: number; regularMarketDayHigh: number; regularMarketDayLow: number; }) => {
                 const symbol = element.symbol;
                 const symbolDate = new Date(element.regularMarketTime * 1000);
                 const symbolDay = symbolDate.getDate();
@@ -111,7 +112,7 @@ export class YahooApi {
     }
 
     async getChartData(symbol: string, range: string, interval: string): Promise<object> {
-        const searchParams = { symbol, range, interval, region:'NO',lang:'nb-NO', includePrePost: false, events: 'div|split|earn' };
+        const searchParams = { symbol, range, interval, region: 'NO', lang: 'nb-NO', includePrePost: false, events: 'div|split|earn' };
 
         const chart = await got(this.chartUrl, { searchParams })
             .then(res => {

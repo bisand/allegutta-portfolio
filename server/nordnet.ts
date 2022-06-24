@@ -10,7 +10,7 @@ export class NordnetApi {
     private _self: NordnetApi;
     private _username: string;
     private _password: string;
-    private _intervalPointer: NodeJS.Timeout;
+    private _intervalPointer: NodeJS.Timeout | undefined;
 
     public onBatchDataReceived?: (batchData: NordnetBatchData) => void;
     public onError?: (error: any) => void;
@@ -37,7 +37,7 @@ export class NordnetApi {
         this._self = this;
     }
 
-    private once(checkFn, opts = new Option()) {
+    private once(checkFn: any, opts = new Option()) {
         return new Promise((resolve, reject) => {
             const startTime = new Date();
             const timeout = opts.timeout || 10000;
@@ -72,13 +72,13 @@ export class NordnetApi {
     }
 
     public async startPolling(pollIntervalMinutes: number = 60) {
-        clearInterval(this._intervalPointer);
+        clearInterval(this._intervalPointer as NodeJS.Timeout);
         await this.updateCache(this);
         this._intervalPointer = setInterval(this.updateCache, pollIntervalMinutes * 60 * 1000, this);
     }
 
     public async stopPolling() {
-        clearInterval(this._intervalPointer);
+        clearInterval(this._intervalPointer as NodeJS.Timeout);
     }
 
     public async getBatchData(forceRun: boolean = false, refreshIntervalMinutes: number = 60): Promise<NordnetBatchData> {
@@ -121,7 +121,7 @@ export class NordnetApi {
                     const isJson = headers['content-type'] && headers['content-type'].includes('application/json');
 
                     if (isAPI && isPOST && isJson) {
-                        const postData = JSON.parse(JSON.parse(postDataText)['batch']);
+                        const postData = JSON.parse(JSON.parse(postDataText as string)['batch']);
                         for (let i = 0; i < postData.length; i++) {
                             const item = postData[i];
                             if (item.relative_url.includes('accounts/2/positions')) {

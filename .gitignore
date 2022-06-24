@@ -64,7 +64,7 @@ typings/
 .vscode/
 
 # Angular dist dir
-client_dist
-server_dist
+client_dist/
+server_dist/
 data
 **/.angular/cache

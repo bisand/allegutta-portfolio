@@ -1,7 +1,7 @@
 export class Option {
 
-    private _timeout: number;
-    private _timeoutMsg: string;
+    private _timeout: number = 60;
+    private _timeoutMsg: string = '';
     public get timeoutMsg(): string {
         return this._timeoutMsg;
     }
@@ -14,7 +14,7 @@ export class Option {
     public set timeout(v: number) {
         this._timeout = v;
     }
-    private _interval: number;
+    private _interval: number = 60;
     public get interval(): number {
         return this._interval;
     }

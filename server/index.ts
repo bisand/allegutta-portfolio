@@ -25,7 +25,7 @@ const appBase = express();
 const wsInstance = expressWs(appBase);
 const wss = wsInstance.getWss();
 const { app } = wsInstance;
-const nordnetApi = new NordnetApi(process.env.NORDNET_USERNAME, process.env.NORDNET_PASSWORD);
+const nordnetApi = new NordnetApi(process.env.NORDNET_USERNAME as string, process.env.NORDNET_PASSWORD as string);
 
 let config = {
     dataFetchInterval: 11533,
@@ -141,11 +141,6 @@ async function parseMessage(msg: any, ws: ExtWebSocket) {
 // tslint:disable-next-line: no-empty
 function noop() { }
 
-// Heartbeat function.
-function heartbeat() {
-    this.isAlive = true;
-}
-
 // Start by reading the config file.
 readConfigFile();
 
@@ -154,7 +149,7 @@ const options: any = {
     dotfiles: 'ignore',
     extensions: ['htm', 'html', 'js', 'css', 'png', 'ico', 'gif'],
     maxAge: '1d',
-    setHeaders(res) {
+    setHeaders(res: any) {
         res.set('x-timestamp', Date.now());
     },
 };
@@ -183,7 +178,11 @@ app.get('/', (req: Request, res: Response) => {
 app.ws('/portfolio/ws', (ws: WebSocket, req: any) => {
     const extWs = ws as ExtWebSocket;
     extWs.isAlive = true;
-    extWs.on('pong', heartbeat);
+    extWs.on('pong', function () {
+        return (() => {
+            (this as ExtWebSocket).isAlive = true;
+        })
+    });
 
     extWs.on('message', async msg => {
         try {
@@ -282,8 +281,8 @@ nordnetApi.onBatchDataReceived = (batchData: NordnetBatchData) => {
     if (!portfolio)
         portfolio = new Portfolio();
 
-    portfolio.cash = batchData.nordnetAccountInfo.account_sum.value;
-    Object.assign(portfolio.positions, batchData.nordnetPositions.map(item => {
+    portfolio.cash = batchData?.nordnetAccountInfo?.account_sum?.value ?? 0;
+    Object.assign(portfolio.positions, batchData?.nordnetPositions?.map(item => {
         return { symbol: item.instrument.symbol + '.OL', shares: item.qty, avg_price: item.acq_price.value };
     }));
     const yahooApi = new YahooApi();
@@ -294,6 +293,6 @@ nordnetApi.onError = (error: any) => {
 };
 
 // Start checking for portfolio changes every 12 hours.
-nordnetApi.startPolling(60*12);
+nordnetApi.startPolling(60 * 12);
 
 app.listen(4000);

@@ -1,14 +1,13 @@
 {
     "compilerOptions": {
         "lib": [
-            "es2019",
-            "es2020.promise",
-            "es2020.bigint",
-            "es2020.string"
+            "ES2021",
+            "ES2021.Promise",
+            "ES2021.String"
         ],
-        "module": "commonjs",
-        "target": "es2019",
-        "strict": false,
+        "module": "Node16",
+        "target": "ES2021",
+        "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,

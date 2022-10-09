@@ -121,29 +121,48 @@ export class NordnetApi {
 
                     const url = request.url();
                     const postDataText = request.postData();
-                    const isAPI = url && url.includes('/api/2/batch')
+                    const isAPI = url && (url.includes('/api/2/batch') || url.includes('/api/2/accounts'))
                     const isPOST = request.method() === 'POST'
                     const isJson = headers['content-type'] && headers['content-type'].includes('application/json');
 
                     if (isAPI && isPOST && isJson) {
-                        const postData = JSON.parse(JSON.parse(postDataText as string)['batch']);
-                        for (let i = 0; i < postData.length; i++) {
-                            const item = postData[i];
-                            if (item.relative_url.includes('accounts/2/positions')) {
-                                const json = await response.json();
-                                if (Array.isArray(json) && json.length > 0 && json[i]['body'] && Array.isArray(json[i]['body'])) {
-                                    NordnetApi.nordnetBatchData.nordnetPositions = json[i]['body'];
-                                    NordnetApi.nordnetBatchData.cacheUpdated = new Date();
-                                    dataCollected++;
+                        try {
+                            const postData = JSON.parse(JSON.parse(postDataText as string)['batch']);
+                            if (postData)
+                                for (let i = 0; i < postData.length; i++) {
+                                    const item = postData[i];
+                                    if (item.relative_url.includes('accounts/2/positions')) {
+                                        const json = await response.json();
+                                        if (Array.isArray(json) && json.length > 0 && json[i]['body'] && Array.isArray(json[i]['body'])) {
+                                            dataCollected = await collectPositions(response, json[i]['body'], dataCollected);
+                                        }
+                                    } else if (item.relative_url.includes('accounts/2/info')) {
+                                        const json = await response.json();
+                                        if (Array.isArray(json) && json.length > 0 && json[i]['body'] && Array.isArray(json[i]['body']) && json[i]['body'].length > 0) {
+                                            dataCollected = await collectAccountInfo(response, json[i]['body'][0], dataCollected);
+                                        }
+                                    }
                                 }
-                            } else if (item.relative_url.includes('accounts/2/info')) {
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    }
+                    else if (isAPI && isJson) {
+                        try {
+                            if (url.includes('accounts/2/positions')) {
                                 const json = await response.json();
-                                if (Array.isArray(json) && json.length > 0 && json[i]['body'] && Array.isArray(json[i]['body']) && json[i]['body'].length > 0) {
-                                    NordnetApi.nordnetBatchData.nordnetAccountInfo = json[i]['body'][0];
-                                    NordnetApi.nordnetBatchData.cacheUpdated = new Date();
-                                    dataCollected++;
+                                if (Array.isArray(json) && json.length > 0) {
+                                    dataCollected = await collectPositions(response, json, dataCollected);
+                                }
+                            } else if (url.includes('accounts/2/info')) {
+                                const json = await response.json();
+                                if (Array.isArray(json) && json.length > 0) {
+                                    dataCollected = await collectAccountInfo(response, json[0], dataCollected);
                                 }
                             }
+
+                        } catch (error) {
+                            console.error(error);
                         }
                     }
                 });
@@ -162,5 +181,19 @@ export class NordnetApi {
                 reject(error);
             }
         });
+
+        async function collectAccountInfo(response: puppeteer.HTTPResponse, json: any, dataCollected: number) {
+            NordnetApi.nordnetBatchData.nordnetAccountInfo = json;
+            NordnetApi.nordnetBatchData.cacheUpdated = new Date();
+            dataCollected++;
+            return dataCollected;
+        }
+
+        async function collectPositions(response: puppeteer.HTTPResponse, json: any, dataCollected: number) {
+            NordnetApi.nordnetBatchData.nordnetPositions = json;
+            NordnetApi.nordnetBatchData.cacheUpdated = new Date();
+            dataCollected++;
+            return dataCollected;
+        }
     }
 };

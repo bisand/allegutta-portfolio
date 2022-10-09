@@ -62,7 +62,7 @@ export class YahooApi {
                 }
             });
 
-        if (quotes) {
+        if (quotes && Array.isArray(quotes)) {
             const currentDay = new Date().getDate();
             let newDay: boolean = false;
             quotes.forEach((element: { symbol: any; regularMarketTime: number; longName: string; regularMarketPrice: number; regularMarketChange: number; regularMarketChangePercent: number; regularMarketPreviousClose: number; regularMarketDayHigh: number; regularMarketDayLow: number; }) => {

@@ -95,7 +95,12 @@ export class NordnetApi {
 
                 await page.goto(URL)
                 await page.click('button#cookie-accept-all-secondary');
-                await page.click('button#otp-view')
+                // await page.click("//button/*[contains(., 'brukernavn og passord')]")
+                const [button] = await page.$x("//button[contains(., 'brukernavn og passord')]");
+                if (button) {
+                    await button.click();
+                }
+
 
                 await page.waitForSelector('input[name="username"]', { timeout: 5000 });
                 await page.type('input[name="username"]', this._username)

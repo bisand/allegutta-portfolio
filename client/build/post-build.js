@@ -19,7 +19,7 @@ let mainHash = '';
 let mainBundleFiles = [];
 
 // RegExp to find main.bundle.js, even if it doesn't include a hash in it's name (dev build)
-let mainBundleRegexp = /^(main-)([a-z0-9]*.)([a-f0-9]*)(.js)$/;
+let mainBundleRegexp = /^(main(.|-))([a-z0-9]*.)([a-f0-9]*)(.js)$/;
 
 function escapeRegExp(str) {
     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
@@ -39,7 +39,7 @@ readDir(path.join(__dirname, '../../client_dist/'))
             return found;
         });
 
-        if (mainBundleFiles) {
+        if (mainBundleFiles && mainBundleFiles.length > 0) {
             let matchHash = mainBundleFiles[0].match(mainBundleRegexp);
 
             // if it has a hash in it's name, mark it down

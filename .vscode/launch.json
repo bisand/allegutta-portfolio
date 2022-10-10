@@ -5,6 +5,20 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Launch post-build",
+            "request": "launch",
+            "runtimeArgs": [
+                "run-script",
+                "post-build"
+            ],
+            "cwd": "${workspaceFolder}/client",
+            "runtimeExecutable": "npm",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
             "name": "Debug Client",
             "request": "launch",
             "type": "firefox",

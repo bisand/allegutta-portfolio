@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 docker build -t bisand/allegutta-portfolio .

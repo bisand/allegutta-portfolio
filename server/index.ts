@@ -70,7 +70,10 @@ async function fetchPortfolio(): Promise<Portfolio> {
 }
 
 async function fetchNordnetPortfolio(): Promise<NordnetBatchData> {
+    console.log(`Retrieving data from Nordnet...`);
+    const startTime = Date.now();
     const data: NordnetBatchData = await nordnetApi.getBatchData();
+    console.log(`Successfully retrieved data from Nordnet! (${Date.now() - startTime} ms)`);
     return data;
 }
 

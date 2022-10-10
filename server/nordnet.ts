@@ -83,6 +83,8 @@ export class NordnetApi {
 
     public async getBatchData(forceRun: boolean = false, refreshIntervalMinutes: number = 60): Promise<NordnetBatchData> {
         const timeout: number = refreshIntervalMinutes * 60 * 1000;
+        console.log(`Retrieving data from Nordnet...`);
+        const startTime = Date.now();
         return new Promise(async (resolve, reject) => {
             if (!forceRun && NordnetApi.nordnetBatchData.cacheUpdated && (((new Date()).valueOf() - NordnetApi.nordnetBatchData.cacheUpdated.valueOf()) < timeout)) {
                 resolve(NordnetApi.nordnetBatchData);
@@ -173,6 +175,7 @@ export class NordnetApi {
                 ]).catch(reason => {
                     reject(reason);
                 });
+                console.log(`Successfully retrieved data from Nordnet! (${Date.now() - startTime} ms)`);
                 resolve(NordnetApi.nordnetBatchData);
 
                 await browser.close();

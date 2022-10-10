@@ -31,7 +31,7 @@ export class YahooApi {
         this.portfolio.change_today_percent = 0.0;
 
         let tickers = '';
-        if (this.portfolio && this.portfolio.positions) {
+        if (this.portfolio.positions) {
             this.portfolio.positions.forEach(element => {
                 tickers += element.symbol + ',';
                 this.portfolio.cost_value += element.shares * element.avg_price;

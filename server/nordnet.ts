@@ -96,17 +96,19 @@ export class NordnetApi {
                 await page.goto(URL)
                 await page.click('button#cookie-accept-all-secondary');
                 // await page.click("//button/*[contains(., 'brukernavn og passord')]")
+                await page.waitForXPath("//button[contains(., 'innloggingsmetode')]", { timeout: 10000 })
                 const [button1] = await page.$x("//button[contains(., 'innloggingsmetode')]");
                 if (button1) {
                     await button1.click();
                 }
+                await page.waitForXPath("//button[contains(., 'brukernavn og passord')]", { timeout: 10000 })
                 const [button2] = await page.$x("//button[contains(., 'brukernavn og passord')]");
                 if (button2) {
                     await button2.click();
                 }
 
 
-                await page.waitForSelector('input[name="username"]', { timeout: 5000 });
+                await page.waitForSelector('input[name="username"]', { timeout: 10000 });
                 await page.type('input[name="username"]', this._username)
                 await page.type('input[name="password"]', this._password)
 

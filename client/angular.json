@@ -32,6 +32,7 @@
                     },
                     "configurations": {
                         "production": {
+                            "extractCss": true,
                             "fileReplacements": [
                                 {
                                     "replace": "src/environments/environment.ts",
@@ -59,6 +60,7 @@
                             ]
                         },
                         "development": {
+                            "extractCss": true,
                             "buildOptimizer": false,
                             "optimization": false,
                             "vendorChunk": true,
